@@ -1,0 +1,15 @@
+{
+  "name": "cadulis/sdk",
+  "description": "Cadulis API SDK",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.3",
+    "bixev/light-logger": ">=1.0.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "Cadulis\\Sdk\\": "src/"
+    }
+  }
+}
