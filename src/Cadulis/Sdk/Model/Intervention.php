@@ -26,8 +26,19 @@ class Intervention extends AbstractModel
     public $address;
     public $address_additional;
     public $priority;
+
+    /**
+     * @deprecated
+     */
     public $pdf_b64;
+
+    /**
+     * @deprecated
+     */
     public $withPdf;
+
+    public $reports_b64;
+    public $withReports;
 
     /**
      * @var int duration in seconds
@@ -53,7 +64,7 @@ class Intervention extends AbstractModel
     public $custom_status1 = '';
     public $custom_status2 = '';
 
-    protected $_properties = ['id', 'cref', 'is_light_model', 'reference', 'title', 'address', 'address_additional', 'priority', 'duration', 'scheduled_start_at', 'scheduled_end_at', 'appointment_at', 'comment', 'status', 'pdf_b64', 'withPdf', 'custom_status1', 'custom_status2'];
+    protected $_properties = ['id', 'cref', 'is_light_model', 'reference', 'title', 'address', 'address_additional', 'priority', 'duration', 'scheduled_start_at', 'scheduled_end_at', 'appointment_at', 'comment', 'status', 'pdf_b64', 'withPdf', 'reports_b64', 'withReports', 'custom_status1', 'custom_status2'];
 
     /**
      * @var InterventionType
