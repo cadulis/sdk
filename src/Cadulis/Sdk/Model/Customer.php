@@ -7,6 +7,7 @@ class Customer extends AbstractModel
 
     const CUSTOMER_TYPE_COMPANY = 'company';
     const CUSTOMER_TYPE_INDIVIDUAL = 'individual';
+    const CUSTOMER_TYPES_ALLOWED = [self::CUSTOMER_TYPE_COMPANY, self::CUSTOMER_TYPE_INDIVIDUAL];
 
     public $id;
     public $reference;
@@ -53,4 +54,12 @@ class Customer extends AbstractModel
         }
     }
 
+    protected function checkContent(array $data = null)
+    {
+        if (isset($data['type']) && !in_array($data['type'], static::CUSTOMER_TYPES_ALLOWED)) {
+            throw new \Exception(
+                'Invalid parameter "type", has to be one of' . implode(',', static::CUSTOMER_TYPES_ALLOWED)
+            );
+        }
+    }
 }
