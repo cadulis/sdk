@@ -19,7 +19,8 @@ class Customer extends AbstractModel
     public $mobile;
     public $comment;
     public $email;
-    protected $_properties = array('id', 'reference', 'type', 'name', 'address', 'address_additional', 'phone', 'mobile', 'comment', 'email');
+    public $category;
+    protected $_properties = array('id', 'reference', 'type', 'name', 'address', 'address_additional', 'phone', 'mobile', 'comment', 'email', 'category');
 
     /**
      * @var CustomerCustomFields
