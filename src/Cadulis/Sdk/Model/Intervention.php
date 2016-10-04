@@ -9,6 +9,7 @@ class Intervention extends AbstractModel
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_AUTOASSIGN_PENDING = 'autoassign_pending';
     const STATUS_CANCELED = 'canceled';
+    const STATUS_INTERMEDIATE_CLOSE = 'intermediate';
     const STATUS_TERMINATED = 'terminated';
     static protected $STATUS_ALLOWED = [
         self::STATUS_PENDING,
