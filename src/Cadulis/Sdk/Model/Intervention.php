@@ -59,13 +59,14 @@ class Intervention extends AbstractModel
     /**
      * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00
      */
-    public $appointment_at;
+    public $call_reference_at;
+    public $with_appointment = false;
     public $comment;
     public $status = self::STATUS_PENDING;
     public $custom_status1 = '';
     public $custom_status2 = '';
 
-    protected $_properties = ['id', 'cref', 'is_light_model', 'reference', 'title', 'address', 'address_additional', 'priority', 'duration', 'scheduled_start_at', 'scheduled_end_at', 'appointment_at', 'comment', 'status', 'pdf_b64', 'withPdf', 'reports_b64', 'withReports', 'custom_status1', 'custom_status2'];
+    protected $_properties = ['id', 'cref', 'is_light_model', 'reference', 'title', 'address', 'address_additional', 'priority', 'duration', 'scheduled_start_at', 'scheduled_end_at', 'call_reference_at', 'with_appointment', 'comment', 'status', 'pdf_b64', 'withPdf', 'reports_b64', 'withReports', 'custom_status1', 'custom_status2'];
 
     /**
      * @var InterventionType
@@ -178,7 +179,7 @@ class Intervention extends AbstractModel
 
     protected function checkContent(array $data = null)
     {
-        $dateFields = ['scheduled_start_at', 'scheduled_end_at', 'appointment_at'];
+        $dateFields = ['scheduled_start_at', 'scheduled_end_at'];
         $this->checkDateFields($dateFields);
         if (isset($data['status']) && !in_array($data['status'], static::$STATUS_ALLOWED)) {
             throw new \Exception(
@@ -207,8 +208,8 @@ class Intervention extends AbstractModel
         $this->scheduled_end_at = $date->format('c');
     }
 
-    public function setScheduledAppointment(\DateTime $date)
+    public function setReferenceDate(\DateTime $date)
     {
-        $this->appointment_at = $date->format('c');
+        $this->call_reference_at = $date->format('c');
     }
 }

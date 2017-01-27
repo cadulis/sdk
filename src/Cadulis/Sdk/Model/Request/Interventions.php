@@ -38,14 +38,9 @@ class Interventions extends AbstractRequest
     public $scheduled_start_at_max;
 
     /**
-     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00
+     * @var bool
      */
-    public $appointment_at_min;
-
-    /**
-     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00
-     */
-    public $appointment_at_max;
+    public $with_appointment;
 
     public $without_scheduled_start;
     public $without_appointment;
@@ -55,7 +50,7 @@ class Interventions extends AbstractRequest
      */
     public $status;
 
-    protected $_properties = ['cref', 'light_model', 'reference', 'scheduled_start_at_min', 'scheduled_start_at_max', 'appointment_at_min', 'appointment_at_max', 'status', 'intervention_types', 'without_scheduled_start', 'without_appointment'];
+    protected $_properties = ['cref', 'light_model', 'reference', 'scheduled_start_at_min', 'scheduled_start_at_max', 'with_appointment', 'status', 'intervention_types', 'without_scheduled_start', 'without_appointment'];
 
     public function __construct(array $data = null)
     {
@@ -107,7 +102,7 @@ class Interventions extends AbstractRequest
 
     protected function checkContent(array $data = null)
     {
-        $dateFields = ['scheduled_start_at_min', 'scheduled_start_at_max', 'appointment_at_min', 'appointment_at_max'];
+        $dateFields = ['scheduled_start_at_min', 'scheduled_start_at_max'];
         $this->checkDateFields($dateFields);
 
         $stringOrStringArrays = ['cref', 'reference', 'status'];
