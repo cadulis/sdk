@@ -64,7 +64,7 @@ class InterventionReport extends AbstractModel
         return $return;
     }
 
-    public function hydrate(array $data = array())
+    public function hydrate(array $data = [])
     {
         parent::hydrate($data);
         if (isset($data['intervention'])) {

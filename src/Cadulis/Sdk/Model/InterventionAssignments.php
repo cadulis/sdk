@@ -29,7 +29,7 @@ class InterventionAssignments extends AbstractCollection
         parent::offsetSet($offset, $value);
     }
 
-    public function hydrate(array $data = array())
+    public function hydrate(array $data = [])
     {
         foreach ($data as $value) {
             $assignment = new User();

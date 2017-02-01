@@ -21,7 +21,7 @@ abstract class AbstractModel
         }
     }
 
-    public function hydrate(array $data = null)
+    public function hydrate(array $data = [])
     {
         $this->checkContent($data);
         foreach ($this->_properties as $property) {
