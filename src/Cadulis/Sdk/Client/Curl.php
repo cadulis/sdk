@@ -36,6 +36,7 @@ class Curl
     protected $_method = self::METHOD_GET;
     protected $_headers = [];
     protected $_postFields = [];
+    protected $_httpResponseCode;
 
     /**
      * @param $url
@@ -183,6 +184,7 @@ class Curl
     public function process()
     {
         $response = curl_exec($this->_curlHandler);
+		$this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
 
         $response = $this->processResponse($response);
 
@@ -293,5 +295,10 @@ class Curl
         $versionNum = $ver['version_number'];
 
         return $versionNum < static::NO_QUIRK_VERSION;
+    }
+
+    public function getHttpResponseCode()
+    {
+		return $this->_httpResponseCode;
     }
 }
