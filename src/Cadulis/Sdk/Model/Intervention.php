@@ -16,6 +16,7 @@ class Intervention extends AbstractModel
         self::STATUS_IN_PROGRESS,
         self::STATUS_AUTOASSIGN_PENDING,
         self::STATUS_CANCELED,
+        self::STATUS_INTERMEDIATE_CLOSE,
         self::STATUS_TERMINATED,
     ];
 
@@ -183,7 +184,7 @@ class Intervention extends AbstractModel
         $this->checkDateFields($dateFields);
         if (isset($data['status']) && !in_array($data['status'], static::$STATUS_ALLOWED)) {
             throw new \Exception(
-                'Invalid parameter "status", has to be one of' . implode(',', static::$STATUS_ALLOWED)
+                'Invalid parameter "status" (' . $data['status'] . '), has to be one of' . implode(',', static::$STATUS_ALLOWED)
             );
         }
     }
