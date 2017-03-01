@@ -173,20 +173,32 @@ class Curl
         return $responseBody;
     }
 
-    public function exec()
+    /**
+     * @param bool $process with json_decode post-processing
+     *
+     * @return mixed
+     */
+    public function exec($process = true)
     {
 
         $this->prepare();
 
-        return $this->process();
+        return $this->process($process);
     }
 
-    public function process()
+    /**
+     * @param bool $process with json_decode post-processing
+     *
+     * @return mixed
+     */
+    public function process($process = true)
     {
         $response = curl_exec($this->_curlHandler);
 		$this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
 
-        $response = $this->processResponse($response);
+		if ($process) {
+            $response = $this->processResponse($response);
+        }
 
         curl_close($this->_curlHandler);
 
