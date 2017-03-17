@@ -27,6 +27,10 @@ class Intervention extends AbstractModel
     public $title;
     public $address;
     public $address_additional;
+
+    /**
+     * @var int the lower, the more prioritized
+     */
     public $priority;
 
     /**
