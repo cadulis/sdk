@@ -29,7 +29,7 @@ class Intervention extends AbstractModel
     public $address_additional;
 
     /**
-     * @var int the lower, the more prioritized
+     * @var int the more, the more prioritized
      */
     public $priority;
 
