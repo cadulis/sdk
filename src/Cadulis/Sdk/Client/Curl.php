@@ -127,44 +127,8 @@ class Curl
         );
     }
 
-    public function processResponse($response)
+    public function processResponse($responseBody)
     {
-        if ($response === false) {
-            $error = curl_error($this->_curlHandler);
-            $code = curl_errno($this->_curlHandler);
-            throw new Exception($error, $code);
-        }
-        $headerSize = curl_getinfo($this->_curlHandler, CURLINFO_HEADER_SIZE);
-
-        list($responseHeaders, $responseBody) = $this->parseHttpResponse($response, $headerSize);
-        $responseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
-
-        $this->log(
-            [
-                'cURL response' => [
-                    'code'    => $responseCode,
-                    'headers' => $responseHeaders,
-                    'body'    => $responseBody,
-                ],
-            ]
-        );
-
-        if ($responseCode >= 300) {
-            $responseArray = json_decode($responseBody, true);
-            if ($responseArray !== null) {
-                $errMsg = 'Error while executing request : ';
-                if (isset($responseArray['message'])) {
-                    $errMsg .= $responseArray['message'];
-                    if (isset($responseArray['details'])) {
-                        $errMsg .= ' (' . $responseArray['details'] . ')';
-                    }
-                }
-            } else {
-                $errMsg = 'Error while executing request : ' . $responseBody;
-            }
-            throw new Exception($errMsg, $responseCode);
-        }
-
         $responseArray = json_decode($responseBody, true);
         if ($responseArray !== null) {
             return $responseArray;
@@ -202,7 +166,43 @@ class Curl
 
         curl_close($this->_curlHandler);
 
-        return $response;
+        if ($response === false) {
+            $error = curl_error($this->_curlHandler);
+            $code = curl_errno($this->_curlHandler);
+            throw new Exception($error, $code);
+        }
+        $headerSize = curl_getinfo($this->_curlHandler, CURLINFO_HEADER_SIZE);
+
+        list($responseHeaders, $responseBody) = $this->parseHttpResponse($response, $headerSize);
+        $responseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
+
+        $this->log(
+            [
+                'cURL response' => [
+                    'code'    => $responseCode,
+                    'headers' => $responseHeaders,
+                    'body'    => $responseBody,
+                ],
+            ]
+        );
+
+        if ($responseCode >= 300) {
+            $responseArray = json_decode($responseBody, true);
+            if ($responseArray !== null) {
+                $errMsg = 'Error while executing request : ';
+                if (isset($responseArray['message'])) {
+                    $errMsg .= $responseArray['message'];
+                    if (isset($responseArray['details'])) {
+                        $errMsg .= ' (' . $responseArray['details'] . ')';
+                    }
+                }
+            } else {
+                $errMsg = 'Error while executing request : ' . $responseBody;
+            }
+            throw new Exception($errMsg, $responseCode);
+        }
+
+        return $responseBody;
     }
 
     /**
