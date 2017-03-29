@@ -164,8 +164,6 @@ class Curl
             $response = $this->processResponse($response);
         }
 
-        curl_close($this->_curlHandler);
-
         if ($response === false) {
             $error = curl_error($this->_curlHandler);
             $code = curl_errno($this->_curlHandler);
@@ -175,6 +173,8 @@ class Curl
 
         list($responseHeaders, $responseBody) = $this->parseHttpResponse($response, $headerSize);
         $responseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
+
+        curl_close($this->_curlHandler);
 
         $this->log(
             [
