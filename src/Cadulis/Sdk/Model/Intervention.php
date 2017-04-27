@@ -11,6 +11,7 @@ class Intervention extends AbstractModel
     const STATUS_CANCELED = 'canceled';
     const STATUS_INTERMEDIATE_CLOSE = 'intermediate';
     const STATUS_TERMINATED = 'terminated';
+
     static protected $STATUS_ALLOWED = [
         self::STATUS_PENDING,
         self::STATUS_IN_PROGRESS,
