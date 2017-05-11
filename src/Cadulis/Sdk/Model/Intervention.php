@@ -187,7 +187,7 @@ class Intervention extends AbstractModel
     {
         $dateFields = ['scheduled_start_at', 'scheduled_end_at'];
         $this->checkDateFields($dateFields);
-        if (isset($data['status']) && !in_array($data['status'], static::$STATUS_ALLOWED)) {
+        if (!empty($data['status']) && !in_array($data['status'], static::$STATUS_ALLOWED)) {
             throw new \Exception(
                 'Invalid parameter "status" (' . $data['status'] . '), has to be one of' . implode(',', static::$STATUS_ALLOWED)
             );
