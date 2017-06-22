@@ -66,11 +66,15 @@ class Intervention extends AbstractModel
      * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00
      */
     public $call_reference_at;
-    public $with_appointment = false;
+    public $with_appointment;
     public $comment;
-    public $status = self::STATUS_PENDING;
-    public $custom_status1 = '';
-    public $custom_status2 = '';
+    public $status;
+    public $custom_status1;
+    public $custom_status2;
+    public $custom_status3;
+    public $custom_status4;
+    public $custom_status5;
+    public $custom_status6;
 
     protected $_properties = ['id', 'cref', 'is_light_model', 'reference', 'title', 'address', 'address_additional', 'priority', 'duration', 'scheduled_start_at', 'scheduled_end_at', 'call_reference_at', 'with_appointment', 'comment', 'status', 'pdf_b64', 'withPdf', 'reports_b64', 'withReports', 'custom_status1', 'custom_status2'];
 
