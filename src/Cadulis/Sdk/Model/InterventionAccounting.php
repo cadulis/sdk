@@ -11,7 +11,7 @@ class InterventionAccounting extends AbstractModel
     public $billable_transmitted;
     public $billed;
     public $billed_amount;
-    public $billed_comment;
+    public $billed_pieces;
     public $payment_sent;
     public $payment_sent_amount;
     public $invoiceable;
@@ -19,7 +19,7 @@ class InterventionAccounting extends AbstractModel
     public $invoiceable_transmitted;
     public $invoiced;
     public $invoiced_amount;
-    public $invoiced_comment;
+    public $invoiced_pieces;
     public $payment_received;
     public $payment_received_amount;
 
@@ -30,7 +30,7 @@ class InterventionAccounting extends AbstractModel
         'billable_transmitted',
         'billed',
         'billed_amount',
-        'billed_comment',
+        'billed_pieces',
         'payment_sent',
         'payment_sent_amount',
         'invoiceable',
@@ -38,7 +38,7 @@ class InterventionAccounting extends AbstractModel
         'invoiceable_transmitted',
         'invoiced',
         'invoiced_amount',
-        'invoiced_comment',
+        'invoiced_pieces',
         'payment_received',
         'payment_received_amount',
     ];
