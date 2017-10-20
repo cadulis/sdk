@@ -104,6 +104,16 @@ class Intervention extends AbstractModel
     public $custom_fields;
 
     /**
+     * @var InterventionFinancial
+     */
+    public $financial;
+
+    /**
+     * @var InterventionAccounting
+     */
+    public $accounting;
+
+    /**
      * @return array
      */
     public function toArray()
@@ -138,6 +148,18 @@ class Intervention extends AbstractModel
                 throw new \Cadulis\Sdk\Exception('invalid custom_fields instance (must be instanceof \Cadulis\Sdk\InterventionCustomFields');
             }
             $return['custom_fields'] = $this->custom_fields->toArray();
+        }
+        if (!empty($this->financial)) {
+            if (!($this->financial instanceof InterventionFinancial)) {
+                throw new \Cadulis\Sdk\Exception('invalid financial instance (must be instanceof \Cadulis\Sdk\InterventionFinancial');
+            }
+            $return['financial'] = $this->custom_fields->toArray();
+        }
+        if (!empty($this->accounting)) {
+            if (!($this->accounting instanceof InterventionAccounting)) {
+                throw new \Cadulis\Sdk\Exception('invalid accounting instance (must be instanceof \Cadulis\Sdk\InterventionAccounting');
+            }
+            $return['accounting'] = $this->custom_fields->toArray();
         }
 
         return $return;
@@ -184,6 +206,20 @@ class Intervention extends AbstractModel
                 throw new \Exception('Invalid parameter "custom_fields"');
             }
             $this->custom_fields->hydrate($data['custom_fields']);
+        }
+        if (isset($data['financial'])) {
+            $this->financial = new InterventionFinancial();
+            if (!is_array($data['financial'])) {
+                throw new \Exception('Invalid parameter "financial"');
+            }
+            $this->financial->hydrate($data['financial']);
+        }
+        if (isset($data['accounting'])) {
+            $this->accounting = new InterventionAccounting();
+            if (!is_array($data['accounting'])) {
+                throw new \Exception('Invalid parameter "accounting"');
+            }
+            $this->accounting->hydrate($data['accounting']);
         }
     }
 
