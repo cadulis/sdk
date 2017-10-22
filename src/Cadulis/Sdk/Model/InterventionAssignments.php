@@ -2,24 +2,12 @@
 
 namespace Cadulis\Sdk\Model;
 
+/**
+ * @method User offsetGet($offset)
+ * @method User current()
+ */
 class InterventionAssignments extends AbstractCollection
 {
-
-    /**
-     * @return User
-     */
-    public function offsetGet($offset)
-    {
-        return parent::offsetGet($offset);
-    }
-
-    /**
-     * @return User
-     */
-    public function current()
-    {
-        return parent::current();
-    }
 
     public function offsetSet($offset, $value)
     {
