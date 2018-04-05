@@ -53,7 +53,7 @@ class ScheduleWizard extends AbstractRequest
     protected function checkContent(array $data = null)
     {
         $dateFields = ['date_min', 'date_max'];
-        $this->checkDateFields($dateFields);
+        $this->checkDateFields($dateFields, $data);
         if ($this->duration !== null && !preg_match('#^[0-9]{2}\:[0-9]{2}\:[0-9]{2}$#', $this->duration)) {
             throw new \Cadulis\Sdk\Exception('invalid duration : ' . $this->duration);
         }

@@ -81,10 +81,11 @@ abstract class AbstractModel
 
     }
 
-    protected function checkDateFields(array $fieldNames = [])
+    protected function checkDateFields(array $fieldNames = [], array $data = null)
     {
         foreach ($fieldNames as $dateField) {
-            if (isset($data[$dateField]) && $data[$dateField] != '' && !$this->checkDateIso8601($data[$dateField])) {
+            if ($data !== null && isset($data[$dateField]) && $data[$dateField] != ''
+                && !$this->checkDateIso8601($data[$dateField])) {
                 throw new \Cadulis\Sdk\Exception($dateField . ' does not match the iso 8601 pattern');
             }
             if ($this->$dateField !== null && $this->$dateField != '' && !$this->checkDateIso8601($this->$dateField)) {

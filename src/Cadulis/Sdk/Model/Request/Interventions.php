@@ -103,7 +103,7 @@ class Interventions extends AbstractRequest
     protected function checkContent(array $data = null)
     {
         $dateFields = ['scheduled_start_at_min', 'scheduled_start_at_max'];
-        $this->checkDateFields($dateFields);
+        $this->checkDateFields($dateFields, $data);
 
         $stringOrStringArrays = ['cref', 'reference', 'status'];
         foreach ($stringOrStringArrays as $stringOrStringArray) {

@@ -18,6 +18,6 @@ class ScheduleWizardSlot extends \Cadulis\Sdk\Model\Response\AbstractResponse
     protected function checkContent(array $data = null)
     {
         $dateFields = ['date'];
-        $this->checkDateFields($dateFields);
+        $this->checkDateFields($dateFields, $data);
     }
 }

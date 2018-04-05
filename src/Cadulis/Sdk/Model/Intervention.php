@@ -226,7 +226,7 @@ class Intervention extends AbstractModel
     protected function checkContent(array $data = null)
     {
         $dateFields = ['scheduled_start_at', 'scheduled_end_at'];
-        $this->checkDateFields($dateFields);
+        $this->checkDateFields($dateFields, $data);
         if (!empty($data['status']) && !in_array($data['status'], static::$STATUS_ALLOWED)) {
             throw new \Exception(
                 'Invalid parameter "status" (' . $data['status'] . '), has to be one of' . implode(',', static::$STATUS_ALLOWED)
