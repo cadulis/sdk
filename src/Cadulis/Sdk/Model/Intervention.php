@@ -104,6 +104,11 @@ class Intervention extends AbstractModel
     public $custom_fields;
 
     /**
+     * @var ScheduledSlots
+     */
+    public $scheduledSlots;
+
+    /**
      * @var InterventionFinancial
      */
     public $financial;
@@ -153,13 +158,19 @@ class Intervention extends AbstractModel
             if (!($this->financial instanceof InterventionFinancial)) {
                 throw new \Cadulis\Sdk\Exception('invalid financial instance (must be instanceof \Cadulis\Sdk\InterventionFinancial');
             }
-            $return['financial'] = $this->custom_fields->toArray();
+            $return['financial'] = $this->financial->toArray();
         }
         if (!empty($this->accounting)) {
             if (!($this->accounting instanceof InterventionAccounting)) {
                 throw new \Cadulis\Sdk\Exception('invalid accounting instance (must be instanceof \Cadulis\Sdk\InterventionAccounting');
             }
-            $return['accounting'] = $this->custom_fields->toArray();
+            $return['accounting'] = $this->accounting->toArray();
+        }
+        if (!empty($this->scheduledSlots)) {
+            if (!($this->scheduledSlots instanceof ScheduledSlots)) {
+                throw new \Cadulis\Sdk\Exception('invalid scheduledSlots instance (must be instanceof \Cadulis\Sdk\ScheduledSlots');
+            }
+            $return['scheduledSlots'] = $this->scheduledSlots->toArray();
         }
 
         return $return;
@@ -220,6 +231,13 @@ class Intervention extends AbstractModel
                 throw new \Exception('Invalid parameter "accounting"');
             }
             $this->accounting->hydrate($data['accounting']);
+        }
+        if (isset($data['scheduledSlots'])) {
+            $this->scheduledSlots = new ScheduledSlots();
+            if (!is_array($data['scheduledSlots'])) {
+                throw new \Exception('Invalid parameter "scheduledSlots"');
+            }
+            $this->scheduledSlots->hydrate($data['scheduledSlots']);
         }
     }
 
