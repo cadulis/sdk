@@ -71,6 +71,11 @@ abstract class AbstractModel
         return true;
     }
 
+    public function checkIsValid()
+    {
+        $this->checkContent();
+    }
+
     public function getIdentifier()
     {
         return static::MODEL_IDENTIFIER;

@@ -16,6 +16,14 @@ class ScheduledSlot extends AbstractModel
 
     protected $_properties = ['duration', 'scheduled_start_at'];
 
+    /**
+     * @return \DateTime
+     */
+    public function getScheduledDateStart() : \DateTime
+    {
+        return new \DateTime($this->scheduled_start_at);
+    }
+
     protected function checkContent(array $data = null)
     {
         $dateFields = ['scheduled_start_at'];

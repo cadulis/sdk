@@ -4,13 +4,13 @@ namespace Cadulis\Sdk\Model;
 
 class Intervention extends AbstractModel
 {
-    const MODEL_IDENTIFIER = 'intervention';
-    const STATUS_PENDING = 'pending';
-    const STATUS_IN_PROGRESS = 'in_progress';
+    const MODEL_IDENTIFIER          = 'intervention';
+    const STATUS_PENDING            = 'pending';
+    const STATUS_IN_PROGRESS        = 'in_progress';
     const STATUS_AUTOASSIGN_PENDING = 'autoassign_pending';
-    const STATUS_CANCELED = 'canceled';
+    const STATUS_CANCELED           = 'canceled';
     const STATUS_INTERMEDIATE_CLOSE = 'intermediate';
-    const STATUS_TERMINATED = 'terminated';
+    const STATUS_TERMINATED         = 'terminated';
 
     static protected $STATUS_ALLOWED = [
         self::STATUS_PENDING,
@@ -76,7 +76,29 @@ class Intervention extends AbstractModel
     public $custom_status5;
     public $custom_status6;
 
-    protected $_properties = ['id', 'cref', 'is_light_model', 'reference', 'title', 'address', 'address_additional', 'priority', 'duration', 'scheduled_start_at', 'scheduled_end_at', 'call_reference_at', 'with_appointment', 'comment', 'status', 'pdf_b64', 'withPdf', 'reports_b64', 'withReports', 'custom_status1', 'custom_status2'];
+    protected $_properties = [
+        'id',
+        'cref',
+        'is_light_model',
+        'reference',
+        'title',
+        'address',
+        'address_additional',
+        'priority',
+        'duration',
+        'scheduled_start_at',
+        'scheduled_end_at',
+        'call_reference_at',
+        'with_appointment',
+        'comment',
+        'status',
+        'pdf_b64',
+        'withPdf',
+        'reports_b64',
+        'withReports',
+        'custom_status1',
+        'custom_status2',
+    ];
 
     /**
      * @var InterventionType
@@ -126,7 +148,9 @@ class Intervention extends AbstractModel
         $return = parent::toArray();
         if (!empty($this->intervention_type)) {
             if (!($this->intervention_type instanceof InterventionType)) {
-                throw new \Cadulis\Sdk\Exception('invalid intervention_type instance (must be instanceof \Cadulis\Sdk\InterventionType');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid intervention_type instance (must be instanceof \Cadulis\Sdk\InterventionType'
+                );
             }
             $return['intervention_type'] = $this->intervention_type->toArray();
         }
@@ -138,37 +162,49 @@ class Intervention extends AbstractModel
         }
         if (!empty($this->assignments)) {
             if (!($this->assignments instanceof InterventionAssignments)) {
-                throw new \Cadulis\Sdk\Exception('invalid assignments instance (must be instanceof \Cadulis\Sdk\InterventionAssignments');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid assignments instance (must be instanceof \Cadulis\Sdk\InterventionAssignments'
+                );
             }
             $return['assignments'] = $this->assignments->toArray();
         }
         if (!empty($this->report)) {
             if (!($this->report instanceof InterventionReport)) {
-                throw new \Cadulis\Sdk\Exception('invalid report instance (must be instanceof \Cadulis\Sdk\InterventionReport');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid report instance (must be instanceof \Cadulis\Sdk\InterventionReport'
+                );
             }
             $return['report'] = $this->report->toArray();
         }
         if (!empty($this->custom_fields)) {
             if (!($this->custom_fields instanceof InterventionCustomFields)) {
-                throw new \Cadulis\Sdk\Exception('invalid custom_fields instance (must be instanceof \Cadulis\Sdk\InterventionCustomFields');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid custom_fields instance (must be instanceof \Cadulis\Sdk\InterventionCustomFields'
+                );
             }
             $return['custom_fields'] = $this->custom_fields->toArray();
         }
         if (!empty($this->financial)) {
             if (!($this->financial instanceof InterventionFinancial)) {
-                throw new \Cadulis\Sdk\Exception('invalid financial instance (must be instanceof \Cadulis\Sdk\InterventionFinancial');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid financial instance (must be instanceof \Cadulis\Sdk\InterventionFinancial'
+                );
             }
             $return['financial'] = $this->financial->toArray();
         }
         if (!empty($this->accounting)) {
             if (!($this->accounting instanceof InterventionAccounting)) {
-                throw new \Cadulis\Sdk\Exception('invalid accounting instance (must be instanceof \Cadulis\Sdk\InterventionAccounting');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid accounting instance (must be instanceof \Cadulis\Sdk\InterventionAccounting'
+                );
             }
             $return['accounting'] = $this->accounting->toArray();
         }
         if (!empty($this->scheduledSlots)) {
             if (!($this->scheduledSlots instanceof ScheduledSlots)) {
-                throw new \Cadulis\Sdk\Exception('invalid scheduledSlots instance (must be instanceof \Cadulis\Sdk\ScheduledSlots');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid scheduledSlots instance (must be instanceof \Cadulis\Sdk\ScheduledSlots'
+                );
             }
             $return['scheduledSlots'] = $this->scheduledSlots->toArray();
         }
@@ -247,7 +283,32 @@ class Intervention extends AbstractModel
         $this->checkDateFields($dateFields, $data);
         if (!empty($data['status']) && !in_array($data['status'], static::$STATUS_ALLOWED)) {
             throw new \Exception(
-                'Invalid parameter "status" (' . $data['status'] . '), has to be one of' . implode(',', static::$STATUS_ALLOWED)
+                'Invalid parameter "status" (' . $data['status'] . '), has to be one of' . implode(
+                    ',',
+                    static::$STATUS_ALLOWED
+                )
+            );
+        }
+        if (!empty($this->status) && !in_array($this->status, static::$STATUS_ALLOWED)) {
+            throw new \Exception(
+                'Invalid parameter "status" (' . $this->status . '), has to be one of' . implode(
+                    ',',
+                    static::$STATUS_ALLOWED
+                )
+            );
+        }
+        if (!empty($data['scheduledSlots']) && count($data['scheduledSlots']) > 0
+            && (!empty($data['scheduled_start_at']) || !empty($data['duration']))
+        ) {
+            throw new \Exception(
+                'Invalid dates given : scheduledSlots and scheduled_start_at/duration cannot be set at the same time'
+            );
+        }
+        if (!empty($this->scheduledSlots) && count($this->scheduledSlots) > 0
+            && (!empty($this->scheduled_start_at) || empty($this->duration))
+        ) {
+            throw new \Exception(
+                'Invalid dates given : scheduledSlots and scheduled_start_at/duration cannot be set at the same time'
             );
         }
     }
