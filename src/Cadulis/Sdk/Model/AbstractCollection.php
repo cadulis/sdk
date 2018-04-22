@@ -43,7 +43,8 @@ abstract class AbstractCollection extends AbstractModel implements \ArrayAccess,
     public function offsetUnset($offset)
     {
         if (isset($this->_data[$offset])) {
-            if ($this->_iteratorPosition > array_search($offset, $this->_data)) {
+            $keys = array_keys($this->_data);
+            if ($this->_iteratorPosition > array_search($offset, $keys)) {
                 $this->_iteratorPosition--;
             }
             unset($this->_data[$offset]);

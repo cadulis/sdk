@@ -149,21 +149,23 @@ class Intervention extends AbstractModel
         if (!empty($this->intervention_type)) {
             if (!($this->intervention_type instanceof InterventionType)) {
                 throw new \Cadulis\Sdk\Exception(
-                    'invalid intervention_type instance (must be instanceof \Cadulis\Sdk\InterventionType'
+                    'invalid intervention_type instance (must be instanceof \Cadulis\Sdk\InterventionType)'
                 );
             }
             $return['intervention_type'] = $this->intervention_type->toArray();
         }
         if (!empty($this->customer)) {
             if (!($this->customer instanceof Customer)) {
-                throw new \Cadulis\Sdk\Exception('invalid customer instance (must be instanceof \Cadulis\Sdk\Customer');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid customer instance (must be instanceof \Cadulis\Sdk\Customer)'
+                );
             }
             $return['customer'] = $this->customer->toArray();
         }
         if (!empty($this->assignments)) {
             if (!($this->assignments instanceof InterventionAssignments)) {
                 throw new \Cadulis\Sdk\Exception(
-                    'invalid assignments instance (must be instanceof \Cadulis\Sdk\InterventionAssignments'
+                    'invalid assignments instance (must be instanceof \Cadulis\Sdk\InterventionAssignments)'
                 );
             }
             $return['assignments'] = $this->assignments->toArray();
@@ -171,7 +173,7 @@ class Intervention extends AbstractModel
         if (!empty($this->report)) {
             if (!($this->report instanceof InterventionReport)) {
                 throw new \Cadulis\Sdk\Exception(
-                    'invalid report instance (must be instanceof \Cadulis\Sdk\InterventionReport'
+                    'invalid report instance (must be instanceof \Cadulis\Sdk\InterventionReport)'
                 );
             }
             $return['report'] = $this->report->toArray();
@@ -179,7 +181,7 @@ class Intervention extends AbstractModel
         if (!empty($this->custom_fields)) {
             if (!($this->custom_fields instanceof InterventionCustomFields)) {
                 throw new \Cadulis\Sdk\Exception(
-                    'invalid custom_fields instance (must be instanceof \Cadulis\Sdk\InterventionCustomFields'
+                    'invalid custom_fields instance (must be instanceof \Cadulis\Sdk\InterventionCustomFields)'
                 );
             }
             $return['custom_fields'] = $this->custom_fields->toArray();
@@ -187,7 +189,7 @@ class Intervention extends AbstractModel
         if (!empty($this->financial)) {
             if (!($this->financial instanceof InterventionFinancial)) {
                 throw new \Cadulis\Sdk\Exception(
-                    'invalid financial instance (must be instanceof \Cadulis\Sdk\InterventionFinancial'
+                    'invalid financial instance (must be instanceof \Cadulis\Sdk\InterventionFinancial)'
                 );
             }
             $return['financial'] = $this->financial->toArray();
@@ -195,7 +197,7 @@ class Intervention extends AbstractModel
         if (!empty($this->accounting)) {
             if (!($this->accounting instanceof InterventionAccounting)) {
                 throw new \Cadulis\Sdk\Exception(
-                    'invalid accounting instance (must be instanceof \Cadulis\Sdk\InterventionAccounting'
+                    'invalid accounting instance (must be instanceof \Cadulis\Sdk\InterventionAccounting)'
                 );
             }
             $return['accounting'] = $this->accounting->toArray();
@@ -203,7 +205,7 @@ class Intervention extends AbstractModel
         if (!empty($this->scheduledSlots)) {
             if (!($this->scheduledSlots instanceof ScheduledSlots)) {
                 throw new \Cadulis\Sdk\Exception(
-                    'invalid scheduledSlots instance (must be instanceof \Cadulis\Sdk\ScheduledSlots'
+                    'invalid scheduledSlots instance (must be instanceof \Cadulis\Sdk\ScheduledSlots)'
                 );
             }
             $return['scheduledSlots'] = $this->scheduledSlots->toArray();
@@ -305,7 +307,7 @@ class Intervention extends AbstractModel
             );
         }
         if (!empty($this->scheduledSlots) && count($this->scheduledSlots) > 0
-            && (!empty($this->scheduled_start_at) || empty($this->duration))
+            && (!empty($this->scheduled_start_at) || !empty($this->duration))
         ) {
             throw new \Exception(
                 'Invalid dates given : scheduledSlots and scheduled_start_at/duration cannot be set at the same time'
