@@ -10,11 +10,11 @@ class Curl
     // cURL hex representation of version 7.30.0
     const NO_QUIRK_VERSION = 0x071E00;
 
-    cons MAX_REDIRECT = 10;
+    const MAX_REDIRECT = 10;
 
-    const METHOD_POST = 'POST';
-    const METHOD_GET = 'GET';
-    const METHOD_PUT = 'PUT';
+    const METHOD_POST   = 'POST';
+    const METHOD_GET    = 'GET';
+    const METHOD_PUT    = 'PUT';
     const METHOD_DELETE = 'DELETE';
 
     protected $_knownMethods = [
@@ -35,23 +35,34 @@ class Curl
     protected $_curlHandler;
 
     protected $_url;
-    protected $_method = self::METHOD_GET;
-    protected $_headers = [];
-    protected $_postFields = [];
+    protected $_method        = self::METHOD_GET;
+    protected $_headers       = [];
+    protected $_postFields    = [];
     protected $_httpResponseCode;
-    protected $_allowLocalIP = false;
+    protected $_allowLocalIP  = false;
     protected $_redirectCount = 0;
+    protected $_host;
+    protected $_port;
+    protected $_ip;
+    protected $_responseHeaders;
+    protected $_responseBody;
 
     /**
-     * @param $url
-     * @param string $method
-     * @param array $headers
-     * @param array $postFields
+     * @param                                         $url
+     * @param string                                  $method
+     * @param array                                   $headers
+     * @param array                                   $postFields
      * @param \Bixev\LightLogger\LoggerInterface|null $logger
-     * @throws Exception
+     * @param bool                                    $allowLocalIp
      */
-    public function __construct($url, $method = self::METHOD_GET, array $headers = [], array $postFields = [], \Bixev\LightLogger\LoggerInterface $logger = null, bool $allowLocalIp = false)
-    {
+    public function __construct(
+        $url,
+        $method = self::METHOD_GET,
+        array $headers = [],
+        array $postFields = [],
+        \Bixev\LightLogger\LoggerInterface $logger = null,
+        bool $allowLocalIp = false
+    ) {
         $this->_logger = $logger;
         $this->_allowLocalIP = $allowLocalIp;
         $this->setVars($url, $method, $headers, $postFields);
@@ -66,40 +77,43 @@ class Curl
         }
 
         /* security part #1 from https://github.com/xavierleune/demo-forum-php/blob/master/src/Extractor/UrlCrawler6.php*/
-        $host = parse_url($url, PHP_URL_HOST);
-        $url = str_replace($host, idn_to_ascii($host), $url);
+        $this->_host = parse_url($url, PHP_URL_HOST);
+        $url = str_replace($this->_host, idn_to_ascii($this->_host), $url);
         $scheme = parse_url($url, PHP_URL_SCHEME);
-        if (! in_array($scheme, ['http', 'https'] )) {
+        if (!in_array($scheme, ['http', 'https'])) {
             throw new Exception('Wrong URL (allowed protocols are : http/https)');
         }
         // Looks like an ip
         if (
-            preg_match('/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/', $host)
-            || preg_match('/^(((?=(?>.*?(::))(?!.+\3)))\3?|([\dA-F]{1,4}(\3|:(?!$)|$)|\2))(?4){5}((?4){2}|((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?7)){3})\z/i', $host)
+            preg_match('/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/', $this->_host)
+            ||
+            preg_match(
+                '/^(((?=(?>.*?(::))(?!.+\3)))\3?|([\dA-F]{1,4}(\3|:(?!$)|$)|\2))(?4){5}((?4){2}|((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?7)){3})\z/i',
+                $this->_host
+            )
         ) {
-            if (!$allowLocalIp && filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+            if (!$this->_allowLocalIP &&
+                filter_var($this->_host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ===
+                false
+            ) {
                 throw new Exception('Wrong ip');
             }
         } else {
             // Looks like an hostname
-            if (filter_var($host, FILTER_VALIDATE_DOMAIN) === false) {
+            if (filter_var($this->_host, FILTER_VALIDATE_DOMAIN) === false) {
                 throw new Exception('Wrong host');
             }
-            $ip = gethostbyname($host);
-            if (!$allowLocalIp && filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+            $this->_ip = gethostbyname($this->_host);
+            if (!$this->_allowLocalIP &&
+                filter_var($this->_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ===
+                false
+            ) {
                 throw new Exception('Domains resolves to local IP');
             }
             // Force IP
-            $port = ['http' => 80, 'https' => 443][$scheme]; // This syntax is ugly, but I actually like it. I don't care that's not a real app.
-            $port = parse_url($url, PHP_URL_PORT)??$port; // If there is an explicit port, use it
-            curl_setopt($curl, CURLOPT_RESOLVE, [
-                sprintf('%s:%d:%s', $host, $port, $ip) // HOST : PORT : IP
-            ]);
+            $this->_port = ['http' => 80, 'https' => 443][$scheme]; // This syntax is ugly, but I actually like it
+            $this->_port = parse_url($url, PHP_URL_PORT) ?? $this->_port; // If there is an explicit port, use it
         }
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 2);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, false); // we need to manually follow redirections to check host each time
         /* end security part #1*/
 
         $method = trim($method);
@@ -140,6 +154,7 @@ class Curl
 
         curl_setopt($this->_curlHandler, CURLOPT_CUSTOMREQUEST, $this->_method);
 
+        // we need to manually follow redirections to check host each time
         curl_setopt($this->_curlHandler, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($this->_curlHandler, CURLOPT_SSL_VERIFYPEER, true);
         // 1 is CURL_SSLVERSION_TLSv1, which is not always defined in PHP.
@@ -197,12 +212,15 @@ class Curl
         return $this->process($process);
     }
 
-    protected function curlExec(){
+    protected function curlExec()
+    {
         $response = curl_exec($this->_curlHandler);
         $this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
 
-        if ($process) {
-            $response = $this->processResponse($response);
+        if ($response === false) {
+            $error = curl_error($this->_curlHandler);
+            $code = curl_errno($this->_curlHandler);
+            throw new Exception($error, $code);
         }
 
         if ($response === false) {
@@ -211,9 +229,8 @@ class Curl
             throw new Exception($error, $code);
         }
         $headerSize = curl_getinfo($this->_curlHandler, CURLINFO_HEADER_SIZE);
-
-        list($responseHeaders, $responseBody) = $this->parseHttpResponse($response, $headerSize);
-
+        list($this->_responseHeaders, $this->_responseBody) = $this->parseHttpResponse($response, $headerSize);
+        $this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
         curl_close($this->_curlHandler);
 
         return $response;
@@ -226,24 +243,31 @@ class Curl
      */
     public function process($process = true)
     {
-        $response = $this->curlExec();
+        $this->curlExec();
 
         /* security part #2 from from https://github.com/xavierleune/demo-forum-php/blob/master/src/Extractor/UrlCrawler6.php*/
         while (
             $this->_httpResponseCode > 300
             && $this->_httpResponseCode < 310
             && $this->_httpResponseCode !== 304
-            && $this->numRedirect <= self::MAX_REDIRECT
+            && $this->_redirectCount <= self::MAX_REDIRECT
         ) {
             // This is a redirect, we want to check everything
             $this->_redirectCount++;
+            curl_setopt(
+                $this->_curlHandler,
+                CURLOPT_RESOLVE,
+                [
+                    sprintf('%s:%d:%s', $this->_host, $this->_port, $this->_ip) // HOST : PORT : IP
+                ]
+            );
             $this->setVars(
-                curl_getinfo($curl, CURLINFO_REDIRECT_URL),
+                curl_getinfo($this->_curlHandler, CURLINFO_REDIRECT_URL),
                 $this->_method,
                 $this->_headers,
                 $this->_postFields
             );
-            $response = $this->curlExec();
+            $this->curlExec();
         }
         /* end of security part #2 */
 
@@ -251,14 +275,14 @@ class Curl
             [
                 'cURL response' => [
                     'code'    => $this->_httpResponseCode,
-                    'headers' => $responseHeaders,
-                    'body'    => $responseBody,
+                    'headers' => $this->_responseHeaders,
+                    'body'    => $this->_responseBody,
                 ],
             ]
         );
 
         if ($this->_httpResponseCode >= 300) {
-            $responseArray = json_decode($responseBody, true);
+            $responseArray = json_decode($this->_responseBody, true);
             if ($responseArray !== null) {
                 $errMsg = 'Error while executing request : ';
                 if (isset($responseArray['message'])) {
@@ -268,12 +292,16 @@ class Curl
                     }
                 }
             } else {
-                $errMsg = 'Error while executing request : ' . $responseBody;
+                $errMsg = 'Error while executing request : ' . $this->_responseBody;
             }
             throw new Exception($errMsg, $this->_httpResponseCode);
         }
 
-        return $responseBody;
+        if ($process) {
+            $this->_responseBody = $this->processResponse($this->_responseBody);
+        }
+
+        return $this->_responseBody;
     }
 
     /**
@@ -281,6 +309,7 @@ class Curl
      *
      * @param $respData
      * @param $headerSize
+     *
      * @return array
      */
     public function parseHttpResponse($respData, $headerSize)
@@ -306,7 +335,9 @@ class Curl
         } else {
             $responseSegments = explode("\r\n\r\n", $respData, 2);
             $responseHeaders = $responseSegments[0];
-            $responseBody = isset($responseSegments[1]) ? $responseSegments[1] :
+            $responseBody = isset($responseSegments[1])
+                ? $responseSegments[1]
+                :
                 null;
         }
 
@@ -317,7 +348,9 @@ class Curl
 
     /**
      * Parse out headers from raw headers
+     *
      * @param mixed array or string
+     *
      * @return array
      */
     public function getHttpResponseHeaders($rawHeaders)
@@ -382,6 +415,6 @@ class Curl
 
     public function getHttpResponseCode()
     {
-		return $this->_httpResponseCode;
+        return $this->_httpResponseCode;
     }
 }
