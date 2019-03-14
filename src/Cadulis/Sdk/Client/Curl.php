@@ -231,7 +231,6 @@ class Curl
         $headerSize = curl_getinfo($this->_curlHandler, CURLINFO_HEADER_SIZE);
         list($this->_responseHeaders, $this->_responseBody) = $this->parseHttpResponse($response, $headerSize);
         $this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
-        curl_close($this->_curlHandler);
 
         return $response;
     }
@@ -270,6 +269,8 @@ class Curl
             $this->curlExec();
         }
         /* end of security part #2 */
+
+        curl_close($this->_curlHandler);
 
         $this->log(
             [
