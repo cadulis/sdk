@@ -243,6 +243,7 @@ class Curl
     public function process($process = true)
     {
         $this->curlExec();
+        $callCount = 1;
 
         /* security part #2 from from https://github.com/xavierleune/demo-forum-php/blob/master/src/Extractor/UrlCrawler6.php*/
         while (
@@ -260,13 +261,24 @@ class Curl
                     sprintf('%s:%d:%s', $this->_host, $this->_port, $this->_ip) // HOST : PORT : IP
                 ]
             );
+            $previousUrl = $this->_url;
             $this->setVars(
                 curl_getinfo($this->_curlHandler, CURLINFO_REDIRECT_URL),
                 $this->_method,
                 $this->_headers,
                 $this->_postFields
             );
+            $this->log(
+                [
+                    'httpResponseCode' => $this->_httpResponseCode,
+                    'url'              => $this->_url,
+                ]
+            );
+            if ($previousUrl == $this->_url) {
+                usleep(200000);
+            }
             $this->curlExec();
+            $callCount++;
         }
         /* end of security part #2 */
 
@@ -293,7 +305,7 @@ class Curl
                     }
                 }
             } else {
-                $errMsg = 'Error while executing request : ' . $this->_responseBody;
+                $errMsg = 'Error after ' . $callCount . ' call(s) while executing request : ' . $this->_responseBody;
             }
             throw new Exception($errMsg, $this->_httpResponseCode);
         }
