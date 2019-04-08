@@ -78,7 +78,7 @@ class Curl
 
         /* security part #1 from https://github.com/xavierleune/demo-forum-php/blob/master/src/Extractor/UrlCrawler6.php*/
         $this->_host = parse_url($url, PHP_URL_HOST);
-        $url = str_replace($this->_host, idn_to_ascii($this->_host), $url);
+        $url = str_replace($this->_host, idn_to_ascii($this->_host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46), $url);
         $scheme = parse_url($url, PHP_URL_SCHEME);
         if (!in_array($scheme, ['http', 'https'])) {
             throw new Exception('Wrong URL (allowed protocols are : http/https)');
@@ -96,7 +96,7 @@ class Curl
                 filter_var($this->_host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ===
                 false
             ) {
-                throw new Exception('Wrong ip');
+                throw new Exception('Wrong ip: probably local !');
             }
         } else {
             // Looks like an hostname
