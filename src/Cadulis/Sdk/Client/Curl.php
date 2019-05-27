@@ -223,11 +223,6 @@ class Curl
             throw new Exception($error, $code);
         }
 
-        if ($response === false) {
-            $error = curl_error($this->_curlHandler);
-            $code = curl_errno($this->_curlHandler);
-            throw new Exception($error, $code);
-        }
         $headerSize = curl_getinfo($this->_curlHandler, CURLINFO_HEADER_SIZE);
         list($this->_responseHeaders, $this->_responseBody) = $this->parseHttpResponse($response, $headerSize);
         $this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
