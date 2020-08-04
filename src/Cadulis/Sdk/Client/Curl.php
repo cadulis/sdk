@@ -295,9 +295,12 @@ class Curl
                 $errMsg = 'Error while executing request : ';
                 if (isset($responseArray['message'])) {
                     $errMsg .= $responseArray['message'];
-                    if (isset($responseArray['details'])) {
-                        $errMsg .= ' (' . $responseArray['details'] . ')';
-                    }
+                }
+                if (isset($responseArray['error'])) {
+                    $errMsg .= $responseArray['error'];
+                }
+                if (isset($responseArray['details'])) {
+                    $errMsg .= ' (' . $responseArray['details'] . ')';
                 }
             } else {
                 $errMsg = 'Error after ' . $callCount . ' call(s) while executing request : ' . $this->_responseBody;
