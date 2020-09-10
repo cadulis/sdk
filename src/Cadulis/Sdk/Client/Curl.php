@@ -147,6 +147,22 @@ class Curl
         return $this->_curlHandler;
     }
 
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->_url;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResponseHeaders()
+    {
+        return $this->_responseHeaders;
+    }
+
     public function prepare($ch = null)
     {
 
