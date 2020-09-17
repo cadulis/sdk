@@ -310,13 +310,13 @@ class Curl
             if ($responseArray !== null) {
                 $errMsg = 'Error while executing request : ';
                 if (isset($responseArray['message'])) {
-                    $errMsg .= $responseArray['message'];
+                    $errMsg .= json_encode($responseArray['message']);
                 }
                 if (isset($responseArray['error'])) {
-                    $errMsg .= $responseArray['error'];
+                    $errMsg .= json_encode($responseArray['error']);
                 }
                 if (isset($responseArray['details'])) {
-                    $errMsg .= ' (' . $responseArray['details'] . ')';
+                    $errMsg .= ' (' . json_encode($responseArray['details']) . ')';
                 }
             } else {
                 $errMsg = 'Error after ' . $callCount . ' call(s) while executing request : ' . $this->_responseBody;
