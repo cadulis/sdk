@@ -63,7 +63,7 @@ class Curl
         \Bixev\LightLogger\LoggerInterface $logger = null,
         bool $allowLocalIp = false
     ) {
-        $this->_logger = $logger;
+        $this->_logger       = $logger;
         $this->_allowLocalIP = $allowLocalIp;
         $this->setVars($url, $method, $headers, $postFields);
     }
@@ -78,8 +78,12 @@ class Curl
 
         /* security part #1 from https://github.com/xavierleune/demo-forum-php/blob/master/src/Extractor/UrlCrawler6.php*/
         $this->_host = parse_url($url, PHP_URL_HOST);
-        $url = str_replace($this->_host, idn_to_ascii($this->_host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46), $url);
-        $scheme = parse_url($url, PHP_URL_SCHEME);
+        $url         = str_replace(
+            $this->_host,
+            idn_to_ascii($this->_host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46),
+            $url
+        );
+        $scheme      = parse_url($url, PHP_URL_SCHEME);
         if (!in_array($scheme, ['http', 'https'])) {
             throw new Exception('Wrong URL (allowed protocols are : http/https)');
         }
@@ -124,9 +128,9 @@ class Curl
             throw new Exception('Unknown method : "' . $method . '"');
         }
 
-        $this->_url = $url;
-        $this->_method = $method;
-        $this->_headers = $headers;
+        $this->_url        = $url;
+        $this->_method     = $method;
+        $this->_headers    = $headers;
         $this->_postFields = $postFields;
     }
 
@@ -134,7 +138,7 @@ class Curl
     {
         if ($ch !== null) {
             $this->_curlHandler = $ch;
-        } else {
+        } elseif ($this->_curlHandler === null) {
             $this->_curlHandler = curl_init();
         }
     }
@@ -180,7 +184,7 @@ class Curl
         curl_setopt($this->_curlHandler, CURLOPT_ENCODING, 'gzip,deflate');
 
         $postFields = http_build_query($this->_postFields, '', '&');
-        $url = $this->_url;
+        $url        = $this->_url;
         if ($this->_method == static::METHOD_GET) {
             if ($postFields != '') {
                 $url .= strpos($this->_url, '?') === false ? '?' : '&';
@@ -230,17 +234,17 @@ class Curl
 
     protected function curlExec()
     {
-        $response = curl_exec($this->_curlHandler);
+        $response                = curl_exec($this->_curlHandler);
         $this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
 
         if ($response === false) {
             $error = curl_error($this->_curlHandler);
-            $code = curl_errno($this->_curlHandler);
+            $code  = curl_errno($this->_curlHandler);
             throw new Exception($error, $code);
         }
 
         $headerSize = curl_getinfo($this->_curlHandler, CURLINFO_HEADER_SIZE);
-        list($this->_responseHeaders, $this->_responseBody) = $this->parseHttpResponse($response, $headerSize);
+        [$this->_responseHeaders, $this->_responseBody] = $this->parseHttpResponse($response, $headerSize);
         $this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
 
         return $response;
@@ -357,12 +361,12 @@ class Curl
         }
 
         if ($headerSize) {
-            $responseBody = substr($respData, $headerSize);
+            $responseBody    = substr($respData, $headerSize);
             $responseHeaders = substr($respData, 0, $headerSize);
         } else {
             $responseSegments = explode("\r\n\r\n", $respData, 2);
-            $responseHeaders = $responseSegments[0];
-            $responseBody = isset($responseSegments[1])
+            $responseHeaders  = $responseSegments[0];
+            $responseBody     = isset($responseSegments[1])
                 ? $responseSegments[1]
                 :
                 null;
@@ -391,11 +395,11 @@ class Curl
 
     private function parseStringHeaders($rawHeaders)
     {
-        $headers = [];
+        $headers             = [];
         $responseHeaderLines = explode("\r\n", $rawHeaders);
         foreach ($responseHeaderLines as $headerLine) {
             if ($headerLine && strpos($headerLine, ':') !== false) {
-                list($header, $value) = explode(': ', $headerLine, 2);
+                [$header, $value] = explode(': ', $headerLine, 2);
                 $header = strtolower($header);
                 if (isset($headers[$header])) {
                     $headers[$header] .= "\n" . $value;
@@ -411,7 +415,7 @@ class Curl
     private function parseArrayHeaders($rawHeaders)
     {
         $header_count = count($rawHeaders);
-        $headers = [];
+        $headers      = [];
 
         for ($i = 0; $i < $header_count; $i++) {
             $header = $rawHeaders[$i];
@@ -434,7 +438,7 @@ class Curl
      */
     protected function needsQuirk()
     {
-        $ver = curl_version();
+        $ver        = curl_version();
         $versionNum = $ver['version_number'];
 
         return $versionNum < static::NO_QUIRK_VERSION;
