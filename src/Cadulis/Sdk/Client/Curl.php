@@ -85,7 +85,7 @@ class Curl
         );
         $scheme      = parse_url($url, PHP_URL_SCHEME);
         if (!in_array($scheme, ['http', 'https'])) {
-            throw new Exception('Wrong URL (allowed protocols are : http/https)');
+            throw new Exception('Wrong URL (allowed protocols are : http/https): ' . $url);
         }
         // Looks like an ip
         if (
