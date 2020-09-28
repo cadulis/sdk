@@ -292,6 +292,7 @@ class Curl
             if ($previousUrl == $this->_url) {
                 usleep(200000);
             }
+            $this->prepare();
             $this->curlExec();
             $callCount++;
         }
