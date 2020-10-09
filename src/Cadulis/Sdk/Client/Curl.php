@@ -324,7 +324,9 @@ class Curl
                     $errMsg .= ' (' . json_encode($responseArray['details']) . ')';
                 }
             } else {
-                $errMsg = 'Error after ' . $callCount . ' call(s) while executing request : ' . $this->_responseBody;
+                $errMsg = 'Error after ' . $callCount . ' call(s) while executing request : '
+                    . ' http response code: ' . $this->_httpResponseCode
+                    . ' response: ' . mb_substr($this->_responseBody, 0, 200);
             }
             throw new Exception($errMsg, $this->_httpResponseCode);
         }
