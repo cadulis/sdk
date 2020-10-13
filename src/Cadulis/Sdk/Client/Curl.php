@@ -174,6 +174,9 @@ class Curl
 
         curl_setopt($this->_curlHandler, CURLOPT_CUSTOMREQUEST, $this->_method);
 
+        curl_setopt($this->_curlHandler, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($this->_curlHandler, CURLOPT_TIMEOUT, 10); //timeout in seconds
+
         // we need to manually follow redirections to check host each time
         curl_setopt($this->_curlHandler, CURLOPT_FOLLOWLOCATION, false);
         curl_setopt($this->_curlHandler, CURLOPT_SSL_VERIFYPEER, true);
