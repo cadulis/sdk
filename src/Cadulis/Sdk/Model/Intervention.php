@@ -11,6 +11,8 @@ class Intervention extends AbstractModel
     const STATUS_CANCELED           = 'canceled';
     const STATUS_INTERMEDIATE_CLOSE = 'intermediate';
     const STATUS_TERMINATED         = 'terminated';
+    const CONTACT_TYPE_CALLIN       = 'callin';
+    const CONTACT_TYPE_CALLOUT      = 'callout';
 
     static protected $STATUS_ALLOWED = [
         self::STATUS_PENDING,
@@ -69,6 +71,10 @@ class Intervention extends AbstractModel
     public $with_appointment;
     public $comment;
     public $status;
+    /**
+     * @var string callin|callout
+     */
+    public $contact_type;
     public $custom_status1;
     public $custom_status2;
     public $custom_status3;
@@ -98,6 +104,11 @@ class Intervention extends AbstractModel
         'withReports',
         'custom_status1',
         'custom_status2',
+        'custom_status3',
+        'custom_status4',
+        'custom_status5',
+        'custom_status6',
+        'contact_type',
     ];
 
     /**
@@ -296,6 +307,16 @@ class Intervention extends AbstractModel
                 'Invalid parameter "status" (' . $this->status . '), has to be one of' . implode(
                     ',',
                     static::$STATUS_ALLOWED
+                )
+            );
+        }
+        if (!empty($this->contact_type) 
+            && !in_array($this->contact_type, [static::CONTACT_TYPE_CALLIN, static::CONTACT_TYPE_CALLOUT])
+        ) {
+            throw new \Exception(
+                'Invalid parameter "contact_type" (' . $this->status . '), has to be one of' . implode(
+                    ',',
+                    [static::CONTACT_TYPE_CALLIN, static::CONTACT_TYPE_CALLOUT]
                 )
             );
         }
