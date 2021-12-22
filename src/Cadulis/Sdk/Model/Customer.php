@@ -13,6 +13,7 @@ class Customer extends AbstractModel
     public $reference;
     public $type = self::CUSTOMER_TYPE_COMPANY;
     public $name;
+    public $first_name;
     public $address;
     public $address_additional;
     public $phone;
@@ -20,7 +21,7 @@ class Customer extends AbstractModel
     public $comment;
     public $email;
     public $category;
-    protected $_properties = array('id', 'reference', 'type', 'name', 'address', 'address_additional', 'phone', 'mobile', 'comment', 'email', 'category');
+    protected $_properties = array('id', 'reference', 'type', 'name', 'first_name', 'address', 'address_additional', 'phone', 'mobile', 'comment', 'email', 'category');
 
     /**
      * @var CustomerCustomFields
