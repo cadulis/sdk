@@ -11,7 +11,7 @@ class Customer extends AbstractModel
 
     public $id;
     public $reference;
-    public $type = self::CUSTOMER_TYPE_COMPANY;
+    public $type;
     public $name;
     public $first_name;
     public $address;
