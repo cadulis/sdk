@@ -82,6 +82,16 @@ class Intervention extends AbstractModel
     public $custom_status5;
     public $custom_status6;
 
+    /**
+     * @var bool available in self-service
+     */
+    public $self_service;
+
+    /**
+     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00
+     */
+    public $self_service_start_at;
+
     protected $_properties = [
         'id',
         'cref',
@@ -109,6 +119,8 @@ class Intervention extends AbstractModel
         'custom_status5',
         'custom_status6',
         'contact_type',
+        'self_service',
+        'self_service_start_at',
     ];
 
     /**
@@ -310,7 +322,7 @@ class Intervention extends AbstractModel
                 )
             );
         }
-        if (!empty($this->contact_type) 
+        if (!empty($this->contact_type)
             && !in_array($this->contact_type, [static::CONTACT_TYPE_CALLIN, static::CONTACT_TYPE_CALLOUT])
         ) {
             throw new \Exception(
@@ -359,5 +371,10 @@ class Intervention extends AbstractModel
     public function setReferenceDate(\DateTime $date)
     {
         $this->call_reference_at = $date->format('c');
+    }
+
+    public function setSelfServiceDate(\DateTime $date)
+    {
+        $this->self_service_start_at = $date->format('c');
     }
 }
