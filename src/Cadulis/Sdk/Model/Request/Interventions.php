@@ -50,7 +50,18 @@ class Interventions extends AbstractRequest
      */
     public $status;
 
-    protected $_properties = ['cref', 'light_model', 'reference', 'scheduled_start_at_min', 'scheduled_start_at_max', 'with_appointment', 'status', 'intervention_types', 'without_scheduled_start', 'without_appointment'];
+    protected $_properties = [
+        'cref',
+        'light_model',
+        'reference',
+        'scheduled_start_at_min',
+        'scheduled_start_at_max',
+        'with_appointment',
+        'status',
+        'intervention_types',
+        'without_scheduled_start',
+        'without_appointment',
+    ];
 
     public function __construct(array $data = null)
     {
@@ -66,7 +77,9 @@ class Interventions extends AbstractRequest
         $return = parent::toArray();
         if (!empty($this->intervention_types)) {
             if (!($this->intervention_types instanceof \Cadulis\Sdk\Model\InterventionTypes)) {
-                throw new \Cadulis\Sdk\Exception('invalid intervention_types instance (must be instanceof \Cadulis\Sdk\Model\InterventionTypes');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid intervention_types instance (must be instanceof \Cadulis\Sdk\Model\InterventionTypes'
+                );
             }
             $return['intervention_types'] = $this->intervention_types->toArray();
         }
@@ -81,7 +94,12 @@ class Interventions extends AbstractRequest
         if (isset($data['intervention_types'])) {
             $this->intervention_types = new \Cadulis\Sdk\Model\InterventionTypes();
             if (!is_array($data['intervention_types'])) {
-                throw new \Exception('Invalid parameter "intervention_types"');
+                $data['intervention_types'] = [$data['intervention_types']];
+            }
+            foreach ($data['intervention_types'] as $k => $interventionTypeData) {
+                if (is_scalar($interventionTypeData)) {
+                    $data['intervention_types'][$k] = ['id' => $interventionTypeData];
+                }
             }
             $this->intervention_types->hydrate($data['intervention_types']);
         }
@@ -97,6 +115,24 @@ class Interventions extends AbstractRequest
             if (isset($data['limit'])) {
                 $this->pagination->limit = $data['limit'];
             }
+        }
+        if ($this->with_appointment === 'true') {
+            $this->with_appointment = 1;
+        }
+        if ($this->with_appointment === 'false') {
+            $this->with_appointment = 0;
+        }
+        if ($this->without_appointment === 'true') {
+            $this->without_appointment = 1;
+        }
+        if ($this->without_appointment === 'false') {
+            $this->without_appointment = 0;
+        }
+        if ($this->light_model === 'true') {
+            $this->light_model = 1;
+        }
+        if ($this->light_model === 'false') {
+            $this->light_model = 0;
         }
     }
 
