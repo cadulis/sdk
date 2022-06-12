@@ -37,6 +37,11 @@ class Intervention extends AbstractModel
     public $priority;
 
     /**
+     * @var bool bypass restrictions
+     */
+    public $without_restriction;
+
+    /**
      * @deprecated
      */
     public $pdf_b64;
@@ -121,6 +126,7 @@ class Intervention extends AbstractModel
         'contact_type',
         'self_service',
         'self_service_start_at',
+        'without_restriction',
     ];
 
     /**
