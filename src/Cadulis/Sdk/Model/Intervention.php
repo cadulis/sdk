@@ -39,7 +39,7 @@ class Intervention extends AbstractModel
     /**
      * @var bool bypass restrictions
      */
-    public $without_restriction;
+    public $ignore_restriction;
 
     /**
      * @deprecated
@@ -126,7 +126,7 @@ class Intervention extends AbstractModel
         'contact_type',
         'self_service',
         'self_service_start_at',
-        'without_restriction',
+        'ignore_restriction',
     ];
 
     /**
