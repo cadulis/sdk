@@ -41,6 +41,7 @@ class Curl
     protected $_httpResponseCode;
     protected $_allowLocalIP          = false;
     protected $_throwExceptionOnError = true;
+    protected $_timeout               = 10;
     protected $_redirectCount         = 0;
     protected $_host;
     protected $_port;
@@ -176,7 +177,7 @@ class Curl
         curl_setopt($this->_curlHandler, CURLOPT_CUSTOMREQUEST, $this->_method);
 
         curl_setopt($this->_curlHandler, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($this->_curlHandler, CURLOPT_TIMEOUT, 10); //timeout in seconds
+        curl_setopt($this->_curlHandler, CURLOPT_TIMEOUT, $this->_timeout); //timeout in seconds
 
         // we need to manually follow redirections to check host each time
         curl_setopt($this->_curlHandler, CURLOPT_FOLLOWLOCATION, false);
@@ -459,5 +460,10 @@ class Curl
     public function throwExceptionOnError(bool $throwOnError)
     {
         $this->_throwExceptionOnError = $throwOnError;
+    }
+
+    public function setTimeout(int $timeout)
+    {
+        $this->_timeout = $timeout;
     }
 }
