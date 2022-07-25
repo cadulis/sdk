@@ -35,14 +35,15 @@ class Curl
     protected $_curlHandler;
 
     protected $_url;
-    protected $_method                = self::METHOD_GET;
-    protected $_headers               = [];
-    protected $_postFields            = [];
+    protected $_method                       = self::METHOD_GET;
+    protected $_headers                      = [];
+    protected $_postFields                   = [];
     protected $_httpResponseCode;
-    protected $_allowLocalIP          = false;
-    protected $_throwExceptionOnError = true;
-    protected $_timeout               = 10;
-    protected $_redirectCount         = 0;
+    protected $_allowLocalIP                 = false;
+    protected $_throwExceptionOnError        = true;
+    protected $_acceptSelfSignedCertificates = false;
+    protected $_timeout                      = 10;
+    protected $_redirectCount                = 0;
     protected $_host;
     protected $_port;
     protected $_ip;
@@ -181,7 +182,13 @@ class Curl
 
         // we need to manually follow redirections to check host each time
         curl_setopt($this->_curlHandler, CURLOPT_FOLLOWLOCATION, false);
-        curl_setopt($this->_curlHandler, CURLOPT_SSL_VERIFYPEER, true);
+        if ($this->_acceptSelfSignedCertificates) {
+            curl_setopt($this->_curlHandler, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($this->_curlHandler, CURLOPT_SSL_VERIFYHOST, 0);
+        } else {
+            curl_setopt($this->_curlHandler, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($this->_curlHandler, CURLOPT_SSL_VERIFYHOST, 2);
+        }
         // 1 is CURL_SSLVERSION_TLSv1, which is not always defined in PHP.
         curl_setopt($this->_curlHandler, CURLOPT_SSLVERSION, 1);
         curl_setopt($this->_curlHandler, CURLOPT_RETURNTRANSFER, true);
@@ -465,5 +472,10 @@ class Curl
     public function setTimeout(int $timeout)
     {
         $this->_timeout = $timeout;
+    }
+
+    public function setAcceptSelfSignedCertificates(bool $acceptSelfSigned)
+    {
+        $this->_acceptSelfSignedCertificates = $acceptSelfSigned;
     }
 }
