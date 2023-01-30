@@ -31,6 +31,7 @@ class Intervention extends AbstractModel
     public $address;
     public $address_additional;
     public $assignment_method;
+    public $color;
 
     /**
      * @var int the more, the more prioritized
@@ -129,6 +130,7 @@ class Intervention extends AbstractModel
         'self_service_start_at',
         'ignore_restriction',
         'assignment_method',
+        'color',
     ];
 
     /**
