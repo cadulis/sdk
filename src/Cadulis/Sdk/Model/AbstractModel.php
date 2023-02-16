@@ -31,7 +31,11 @@ abstract class AbstractModel
         $this->checkContent($data);
         foreach ($this->_properties as $property) {
             if (isset($data[$property])) {
-                $this->$property = $data[$property];
+                if (is_array($data[$property])) {
+                    $this->$property = implode(', ', $data[$property]);
+                } else {
+                    $this->$property = $data[$property];
+                }
             }
         }
     }
