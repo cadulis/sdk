@@ -48,7 +48,7 @@ class Curl
     protected $_port;
     protected $_ip;
     protected $_responseHeaders;
-    protected $_responseBody;
+    protected $_responseBody                 = '';
 
     /**
      * @param                                         $url
@@ -285,7 +285,7 @@ class Curl
                 $this->_curlHandler,
                 CURLOPT_RESOLVE,
                 [
-                    sprintf('%s:%d:%s', $this->_host, $this->_port, $this->_ip) // HOST : PORT : IP
+                    sprintf('%s:%d:%s', $this->_host, $this->_port, $this->_ip), // HOST : PORT : IP
                 ]
             );
             $previousUrl = $this->_url;
@@ -477,5 +477,13 @@ class Curl
     public function setAcceptSelfSignedCertificates(bool $acceptSelfSigned)
     {
         $this->_acceptSelfSignedCertificates = $acceptSelfSigned;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResponseBody()
+    {
+        return $this->_responseBody;
     }
 }
