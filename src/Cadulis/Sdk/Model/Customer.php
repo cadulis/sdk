@@ -5,23 +5,36 @@ namespace Cadulis\Sdk\Model;
 class Customer extends AbstractModel
 {
 
-    const CUSTOMER_TYPE_COMPANY = 'company';
+    const CUSTOMER_TYPE_COMPANY    = 'company';
     const CUSTOMER_TYPE_INDIVIDUAL = 'individual';
-    const CUSTOMER_TYPES_ALLOWED = [self::CUSTOMER_TYPE_COMPANY, self::CUSTOMER_TYPE_INDIVIDUAL];
+    const CUSTOMER_TYPES_ALLOWED   = [self::CUSTOMER_TYPE_COMPANY, self::CUSTOMER_TYPE_INDIVIDUAL];
 
-    public $id;
-    public $reference;
-    public $type;
-    public $name;
-    public $first_name;
-    public $address;
-    public $address_additional;
-    public $phone;
-    public $mobile;
-    public $comment;
-    public $email;
-    public $category;
-    protected $_properties = array('id', 'reference', 'type', 'name', 'first_name', 'address', 'address_additional', 'phone', 'mobile', 'comment', 'email', 'category');
+    public    $id;
+    public    $reference;
+    public    $type;
+    public    $name;
+    public    $first_name;
+    public    $address;
+    public    $address_additional;
+    public    $phone;
+    public    $mobile;
+    public    $comment;
+    public    $email;
+    public    $category;
+    protected $_properties = [
+        'id',
+        'reference',
+        'type',
+        'name',
+        'first_name',
+        'address',
+        'address_additional',
+        'phone',
+        'mobile',
+        'comment',
+        'email',
+        'category',
+    ];
 
     /**
      * @var CustomerCustomFields
@@ -36,7 +49,9 @@ class Customer extends AbstractModel
         $return = parent::toArray();
         if (!empty($this->custom_fields)) {
             if (!($this->custom_fields instanceof CustomerCustomFields)) {
-                throw new \Cadulis\Sdk\Exception('invalid custom_fields instance (must be instanceof \Cadulis\Sdk\CustomerCustomFields');
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid custom_fields instance (must be instanceof \Cadulis\Sdk\CustomerCustomFields'
+                );
             }
             $return['custom_fields'] = $this->custom_fields->toArray();
         }
@@ -46,6 +61,11 @@ class Customer extends AbstractModel
 
     public function hydrate(array $data = [])
     {
+        // retro-compatibility
+        if (isset($data['email_address'])) {
+            $data['email'] = $data['email_address'];
+            unset($data['email_address']);
+        }
         parent::hydrate($data);
         if (isset($data['custom_fields'])) {
             $this->custom_fields = new CustomerCustomFields;
