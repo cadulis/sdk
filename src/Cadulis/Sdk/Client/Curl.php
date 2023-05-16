@@ -172,7 +172,6 @@ class Curl
 
     public function prepare($ch = null)
     {
-
         $this->init($ch);
 
         curl_setopt($this->_curlHandler, CURLOPT_CUSTOMREQUEST, $this->_method);
@@ -202,6 +201,8 @@ class Curl
                 $url .= strpos($this->_url, '?') === false ? '?' : '&';
                 $url .= $postFields;
             }
+        } elseif (in_array($this->_method, [static::METHOD_PUT, static::METHOD_POST])) {
+            curl_setopt($this->_curlHandler, CURLOPT_POSTFIELDS, $this->_postFields);
         } else {
             curl_setopt($this->_curlHandler, CURLOPT_POSTFIELDS, $postFields);
         }
