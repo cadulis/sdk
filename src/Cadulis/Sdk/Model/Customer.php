@@ -11,6 +11,7 @@ class Customer extends AbstractModel
 
     public    $id;
     public    $reference;
+    public    $active;
     public    $type;
     public    $name;
     public    $first_name;
@@ -34,6 +35,7 @@ class Customer extends AbstractModel
         'comment',
         'email',
         'category',
+        'active',
     ];
 
     /**
