@@ -4,13 +4,13 @@ namespace Cadulis\Sdk\Model\Response\ScheduleWizard;
 
 class ScheduleWizardDate extends \Cadulis\Sdk\Model\AbstractCollection
 {
-    public $date;
-    protected $_properties = array('date');
+    public    $date;
+    protected $_properties = ['date'];
 
     /**
      * @return ScheduleWizardSlot
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return parent::offsetGet($offset);
     }
@@ -18,12 +18,12 @@ class ScheduleWizardDate extends \Cadulis\Sdk\Model\AbstractCollection
     /**
      * @return ScheduleWizardSlot
      */
-    public function current()
+    public function current() : mixed
     {
         return parent::current();
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (!($value instanceof ScheduleWizardSlot)) {
             throw new \Cadulis\Sdk\Exception('trying to set non valid element');
@@ -31,7 +31,7 @@ class ScheduleWizardDate extends \Cadulis\Sdk\Model\AbstractCollection
         parent::offsetSet($offset, $value);
     }
 
-    public function hydrate(array $data = array())
+    public function hydrate(array $data = [])
     {
         if (isset($data['date'])) {
             $this->date = $data['date'];
@@ -48,9 +48,9 @@ class ScheduleWizardDate extends \Cadulis\Sdk\Model\AbstractCollection
      */
     public function toArray()
     {
-        $return = array(
-            'slots' => array(),
-        );
+        $return = [
+            'slots' => [],
+        ];
         if ($this->date !== null) {
             $return['date'] = $this->date;
         }

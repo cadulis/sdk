@@ -8,7 +8,7 @@ class Routes extends \Cadulis\Sdk\Model\AbstractCollection
     /**
      * @return Route
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return parent::offsetGet($offset);
     }
@@ -16,7 +16,7 @@ class Routes extends \Cadulis\Sdk\Model\AbstractCollection
     /**
      * @return Route
      */
-    public function current()
+    public function current() : mixed
     {
         return parent::current();
     }
@@ -25,7 +25,7 @@ class Routes extends \Cadulis\Sdk\Model\AbstractCollection
      * @param mixed $offset
      * @param Route $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (!($value instanceof Route) || !$value->isValid()) {
             throw new \Cadulis\Sdk\Exception('trying to set non valid route');
@@ -66,6 +66,7 @@ class Routes extends \Cadulis\Sdk\Model\AbstractCollection
 
     /**
      * @param string $routeIdentifier
+     *
      * @return Route|null
      */
     public function findByIdentifier($routeIdentifier)
@@ -81,6 +82,7 @@ class Routes extends \Cadulis\Sdk\Model\AbstractCollection
 
     /**
      * @param string $routeIdentifier
+     *
      * @return Route|null
      */
     public function deleteByIdentifier($routeIdentifier)

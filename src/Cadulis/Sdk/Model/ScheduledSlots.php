@@ -8,7 +8,7 @@ class ScheduledSlots extends AbstractCollection
     /**
      * @return ScheduledSlot
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return parent::offsetGet($offset);
     }
@@ -16,16 +16,16 @@ class ScheduledSlots extends AbstractCollection
     /**
      * @return ScheduledSlot
      */
-    public function current()
+    public function current() : mixed
     {
         return parent::current();
     }
 
     /**
-     * @param mixed $offset
+     * @param mixed         $offset
      * @param ScheduledSlot $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (!($value instanceof ScheduledSlot)) {
             throw new \Cadulis\Sdk\Exception('trying to set non valid element');
@@ -33,7 +33,7 @@ class ScheduledSlots extends AbstractCollection
         parent::offsetSet($offset, $value);
     }
 
-    public function hydrate(array $data = array())
+    public function hydrate(array $data = [])
     {
         foreach ($data as $value) {
             $scheduledSlot = new ScheduledSlot();
@@ -47,7 +47,7 @@ class ScheduledSlots extends AbstractCollection
      */
     public function toArray()
     {
-        $return = array();
+        $return = [];
         foreach ($this as $data) {
             $return[] = $data->toArray();
         }

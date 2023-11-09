@@ -8,7 +8,7 @@ class InterventionTypes extends AbstractCollection
     /**
      * @return InterventionType
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return parent::offsetGet($offset);
     }
@@ -16,16 +16,16 @@ class InterventionTypes extends AbstractCollection
     /**
      * @return InterventionType
      */
-    public function current()
+    public function current() : mixed
     {
         return parent::current();
     }
 
     /**
-     * @param mixed $offset
+     * @param mixed            $offset
      * @param InterventionType $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (!($value instanceof InterventionType)) {
             throw new \Cadulis\Sdk\Exception('trying to set non valid element');

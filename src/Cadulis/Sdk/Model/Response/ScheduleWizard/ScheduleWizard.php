@@ -8,7 +8,7 @@ class ScheduleWizard extends \Cadulis\Sdk\Model\AbstractCollection
     /**
      * @return ScheduleWizardDate
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return parent::offsetGet($offset);
     }
@@ -16,12 +16,12 @@ class ScheduleWizard extends \Cadulis\Sdk\Model\AbstractCollection
     /**
      * @return ScheduleWizardDate
      */
-    public function current()
+    public function current() : mixed
     {
         return parent::current();
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (!($value instanceof ScheduleWizardDate)) {
             throw new \Cadulis\Sdk\Exception('trying to set non valid element');

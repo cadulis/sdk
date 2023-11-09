@@ -9,7 +9,7 @@ namespace Cadulis\Sdk\Model;
 class InterventionAssignments extends AbstractCollection
 {
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (!($value instanceof User)) {
             throw new \Cadulis\Sdk\Exception('trying to set non valid element');
@@ -31,7 +31,7 @@ class InterventionAssignments extends AbstractCollection
      */
     public function toArray()
     {
-        $return = array();
+        $return = [];
         foreach ($this as $data) {
             $return[] = $data->toArray();
         }

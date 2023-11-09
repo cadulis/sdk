@@ -8,7 +8,7 @@ class Interventions extends AbstractCollection
     /**
      * @return Intervention
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         return parent::offsetGet($offset);
     }
@@ -16,16 +16,16 @@ class Interventions extends AbstractCollection
     /**
      * @return Intervention
      */
-    public function current()
+    public function current() : mixed
     {
         return parent::current();
     }
 
     /**
-     * @param mixed $offset
+     * @param mixed        $offset
      * @param Intervention $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if (!($value instanceof Intervention)) {
             throw new \Cadulis\Sdk\Exception('trying to set non valid element');
@@ -33,7 +33,7 @@ class Interventions extends AbstractCollection
         parent::offsetSet($offset, $value);
     }
 
-    public function hydrate(array $data = array())
+    public function hydrate(array $data = [])
     {
         foreach ($data as $value) {
             $intervention = new Intervention();
@@ -47,7 +47,7 @@ class Interventions extends AbstractCollection
      */
     public function toArray()
     {
-        $return = array();
+        $return = [];
         foreach ($this as $data) {
             $return[] = $data->toArray();
         }
