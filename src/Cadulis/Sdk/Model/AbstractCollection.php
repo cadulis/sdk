@@ -17,12 +17,12 @@ abstract class AbstractCollection extends AbstractModel implements \ArrayAccess,
 
     //#####     ArrayAccess     #####//
 
-    public function offsetExists($offset)
+    public function offsetExists($offset) : bool
     {
         return isset($this->_data[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset) : mixed
     {
         if (!isset($this->_data[$offset])) {
             return null;
@@ -31,7 +31,7 @@ abstract class AbstractCollection extends AbstractModel implements \ArrayAccess,
         return $this->_data[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         if ($offset === null) {
             $this->_data[] = $value;
@@ -40,7 +40,7 @@ abstract class AbstractCollection extends AbstractModel implements \ArrayAccess,
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         if (isset($this->_data[$offset])) {
             $keys = array_keys($this->_data);
@@ -53,42 +53,46 @@ abstract class AbstractCollection extends AbstractModel implements \ArrayAccess,
 
     //#####     Countable     #####//
 
-    public function count()
+    public function count() : int
     {
         return count($this->_data);
     }
 
     //#####     Iterator     #####//
 
-    public function rewind()
+    public function rewind() : void
     {
         $this->_iteratorPosition = 0;
     }
 
-    public function current()
+    public function current() : mixed
     {
         $keys = array_keys($this->_data);
 
         return $this->_data[$keys[$this->_iteratorPosition]];
     }
 
-    public function key()
+    public function key() : mixed
     {
         $keys = array_keys($this->_data);
 
         return $keys[$this->_iteratorPosition];
     }
 
-    public function next()
+    public function next() : void
     {
         ++$this->_iteratorPosition;
     }
 
-    public function valid()
+    public function valid() : bool
     {
         $keys = array_keys($this->_data);
 
-        return array_key_exists($this->_iteratorPosition, $keys) && array_key_exists($keys[$this->_iteratorPosition], $this->_data);
+        return array_key_exists($this->_iteratorPosition, $keys)
+            && array_key_exists(
+                $keys[$this->_iteratorPosition],
+                $this->_data
+            );
     }
 
     //#####          #####//
