@@ -20,6 +20,9 @@ class InterventionAssignments extends AbstractCollection
     public function hydrate(array $data = [])
     {
         foreach ($data as $value) {
+            if (!is_array($value)) {
+                continue;
+            }
             $assignment = new User();
             $assignment->hydrate($value);
             $this[] = $assignment;

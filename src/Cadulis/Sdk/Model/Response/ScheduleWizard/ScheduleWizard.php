@@ -41,13 +41,13 @@ class ScheduleWizard extends \Cadulis\Sdk\Model\AbstractCollection
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(bool $simpleData = false)
     {
         $return = [
             'dates' => [],
         ];
         foreach ($this as $data) {
-            $return['dates'][] = $data->toArray();
+            $return['dates'][] = $data->toArray($simpleData);
         }
 
         return $return;

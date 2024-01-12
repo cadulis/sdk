@@ -46,7 +46,7 @@ class ScheduleWizardDate extends \Cadulis\Sdk\Model\AbstractCollection
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(bool $simpleData = false)
     {
         $return = [
             'slots' => [],
@@ -55,7 +55,7 @@ class ScheduleWizardDate extends \Cadulis\Sdk\Model\AbstractCollection
             $return['date'] = $this->date;
         }
         foreach ($this as $data) {
-            $return['slots'][] = $data->toArray();
+            $return['slots'][] = $data->toArray($simpleData);
         }
         return $return;
     }
