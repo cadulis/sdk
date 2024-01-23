@@ -9,19 +9,21 @@ class Customer extends AbstractModel
     const CUSTOMER_TYPE_INDIVIDUAL = 'individual';
     const CUSTOMER_TYPES_ALLOWED   = [self::CUSTOMER_TYPE_COMPANY, self::CUSTOMER_TYPE_INDIVIDUAL];
 
-    public    $id;
-    public    $reference;
-    public    $active;
-    public    $type;
-    public    $name;
-    public    $first_name;
-    public    $address;
-    public    $address_additional;
-    public    $phone;
-    public    $mobile;
-    public    $comment;
-    public    $email;
-    public    $category;
+    public $id;
+    public $reference;
+    public $active;
+    public $type;
+    public $name;
+    public $first_name;
+    public $address;
+    public $address_additional;
+    public $phone;
+    public $mobile;
+    public $comment;
+    public $email;
+    public $category;
+    public $portal_code;
+
     protected $_properties = [
         'id',
         'reference',
@@ -36,6 +38,7 @@ class Customer extends AbstractModel
         'email',
         'category',
         'active',
+        'portal_code',
     ];
 
     /**
