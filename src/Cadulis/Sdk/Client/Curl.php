@@ -62,7 +62,7 @@ class Curl
         $url,
         $method = self::METHOD_GET,
         array $headers = [],
-        array $postFields = [],
+        string|array $postFields = [],
         \Bixev\LightLogger\LoggerInterface $logger = null,
         bool $allowLocalIp = false
     ) {
@@ -71,7 +71,7 @@ class Curl
         $this->setVars($url, $method, $headers, $postFields);
     }
 
-    protected function setVars($url, $method = self::METHOD_GET, array $headers = [], array $postFields = [])
+    protected function setVars($url, $method = self::METHOD_GET, array $headers = [], string|array $postFields = [])
     {
 
         $url = trim($url);
@@ -93,14 +93,14 @@ class Curl
         // Looks like an ip
         if (
             preg_match('/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/', $this->_host)
-            ||
-            preg_match(
+            || preg_match(
                 '/^(((?=(?>.*?(::))(?!.+\3)))\3?|([\dA-F]{1,4}(\3|:(?!$)|$)|\2))(?4){5}((?4){2}|((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?7)){3})\z/i',
                 $this->_host
             )
         ) {
-            if (!$this->_allowLocalIP &&
-                filter_var($this->_host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ===
+            if (!$this->_allowLocalIP
+                && filter_var($this->_host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)
+                ===
                 false
             ) {
                 throw new Exception('Wrong ip: probably local !');
@@ -111,8 +111,8 @@ class Curl
                 throw new Exception('Wrong host');
             }
             $this->_ip = gethostbyname($this->_host);
-            if (!$this->_allowLocalIP &&
-                filter_var($this->_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ===
+            if (!$this->_allowLocalIP
+                && filter_var($this->_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) ===
                 false
             ) {
                 throw new Exception('Domains resolves to local IP');
@@ -194,7 +194,12 @@ class Curl
         curl_setopt($this->_curlHandler, CURLOPT_HEADER, true);
         curl_setopt($this->_curlHandler, CURLOPT_ENCODING, 'gzip,deflate');
 
-        $postFields = http_build_query($this->_postFields, '', '&');
+        $postFields = '';
+        if (is_array($this->_postFields)) {
+            $postFields = http_build_query($this->_postFields, '', '&');
+        } else {
+            $postFields = $this->_postFields;
+        }
         $url = $this->_url;
         if ($this->_method == static::METHOD_GET) {
             if ($postFields != '') {
