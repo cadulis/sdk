@@ -15,12 +15,14 @@ class Curl
     const METHOD_POST   = 'POST';
     const METHOD_GET    = 'GET';
     const METHOD_PUT    = 'PUT';
+    const METHOD_PATCH  = 'PATCH';
     const METHOD_DELETE = 'DELETE';
 
     protected $_knownMethods = [
         self::METHOD_POST,
         self::METHOD_GET,
         self::METHOD_PUT,
+        self::METHOD_PATCH,
         self::METHOD_DELETE,
     ];
 
