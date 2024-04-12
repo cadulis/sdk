@@ -343,6 +343,9 @@ class Curl
                 if (isset($responseArray['details'])) {
                     $errMsg .= ' (' . json_encode($responseArray['details']) . ')';
                 }
+                if (isset($responseArray['errors'])) {
+                    $errMsg .= ' (' . json_encode($responseArray['errors']) . ')';
+                }
             } else {
                 $errMsg = 'Error after ' . $callCount . ' call(s) while executing request : '
                     . ' http response code: ' . $this->_httpResponseCode
