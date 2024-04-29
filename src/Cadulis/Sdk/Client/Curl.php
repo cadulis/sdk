@@ -333,7 +333,7 @@ class Curl
         if ($this->_httpResponseCode >= 300 && $this->_throwExceptionOnError) {
             $responseArray = json_decode($this->_responseBody, true);
             if ($responseArray !== null) {
-                $errMsg = 'Error while executing request : ';
+                $errMsg = '';
                 if (isset($responseArray['message'])) {
                     $errMsg .= json_encode($responseArray['message']);
                 }
@@ -346,6 +346,10 @@ class Curl
                 if (isset($responseArray['errors'])) {
                     $errMsg .= ' (' . json_encode($responseArray['errors']) . ')';
                 }
+                if (empty($errMsg)){
+                    $errMsg = $this->_responseBody;
+                }
+                $errMsg = 'Error while executing request : '.$errMsg;
             } else {
                 $errMsg = 'Error after ' . $callCount . ' call(s) while executing request : '
                     . ' http response code: ' . $this->_httpResponseCode
