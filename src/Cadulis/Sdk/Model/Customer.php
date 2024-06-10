@@ -85,7 +85,7 @@ class Customer extends AbstractModel
             $this->custom_fields->hydrate($data['custom_fields']);
         }
         foreach ($data as $k => $v) {
-            if (!in_array($k, $this->_properties)) {
+            if (!in_array($k, $this->_properties) && $k !== 'custom_fields') {
                 if ($this->custom_fields === null) {
                     $this->custom_fields = new CustomerCustomFields;
                 }
