@@ -7,8 +7,8 @@ class Customer extends AbstractModel
 
     const CUSTOMER_TYPE_COMPANY    = 'company';
     const CUSTOMER_TYPE_INDIVIDUAL = 'individual';
-    const CUSTOMER_TYPE_MACHINE = 'machine';
-    const CUSTOMER_TYPES_ALLOWED = [
+    const CUSTOMER_TYPE_MACHINE    = 'machine';
+    const CUSTOMER_TYPES_ALLOWED   = [
         self::CUSTOMER_TYPE_COMPANY,
         self::CUSTOMER_TYPE_INDIVIDUAL,
         self::CUSTOMER_TYPE_MACHINE,
@@ -83,6 +83,14 @@ class Customer extends AbstractModel
                 throw new \Exception('Invalid parameter "custom_fields"');
             }
             $this->custom_fields->hydrate($data['custom_fields']);
+        }
+        foreach ($data as $k => $v) {
+            if (!in_array($k, $this->_properties)) {
+                if ($this->custom_fields === null) {
+                    $this->custom_fields = new CustomerCustomFields;
+                }
+                $this->custom_fields[$k] = $v;
+            }
         }
     }
 
