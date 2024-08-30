@@ -27,6 +27,7 @@ class Customer extends AbstractModel
     public $comment;
     public $email;
     public $category;
+    public $portal_access;
     public $portal_code;
 
     protected $_properties = [
@@ -43,6 +44,7 @@ class Customer extends AbstractModel
         'email',
         'category',
         'active',
+        'portal_access',
         'portal_code',
     ];
 
