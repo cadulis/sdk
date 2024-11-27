@@ -54,6 +54,11 @@ class Customer extends AbstractModel
     public $custom_fields;
 
     /**
+     * @var CustomerOpeningHours
+     */
+    public $opening_hours;
+
+    /**
      * @return array
      */
     public function toArray()
@@ -66,6 +71,14 @@ class Customer extends AbstractModel
                 );
             }
             $return['custom_fields'] = $this->custom_fields->toArray();
+        }
+        if (!empty($this->opening_hours)) {
+            if (!($this->opening_hours instanceof CustomerOpeningHours)) {
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid opening_hours instance (must be instanceof \Cadulis\Sdk\CustomerOpeningHours'
+                );
+            }
+            $return['opening_hours'] = $this->opening_hours->toString();
         }
 
         return $return;
@@ -86,8 +99,18 @@ class Customer extends AbstractModel
             }
             $this->custom_fields->hydrate($data['custom_fields']);
         }
+        if (isset($data['opening_hours'])) {
+            $this->opening_hours = new CustomerOpeningHours();
+            if (!is_string($data['opening_hours'])) {
+                throw new \Exception('Invalid parameter "opening_hours"');
+            }
+            $this->opening_hours->hydrate($data['opening_hours']);
+        }
         foreach ($data as $k => $v) {
-            if (!in_array($k, $this->_properties) && $k !== 'custom_fields') {
+            if (!in_array($k, $this->_properties)
+                && $k !== 'custom_fields'
+                && $k !== 'opening_hours'
+            ) {
                 if ($this->custom_fields === null) {
                     $this->custom_fields = new CustomerCustomFields;
                 }
