@@ -59,6 +59,11 @@ class Customer extends AbstractModel
     public $opening_hours;
 
     /**
+     * @var CustomerAssignmentRestriction
+     */
+    public $assignment_restrictions;
+
+    /**
      * @return array
      */
     public function toArray()
@@ -79,6 +84,14 @@ class Customer extends AbstractModel
                 );
             }
             $return['opening_hours'] = $this->opening_hours->toString();
+        }
+        if (!empty($this->assignment_restrictions)) {
+            if (!($this->assignment_restrictions instanceof CustomerAssignmentRestriction)) {
+                throw new \Cadulis\Sdk\Exception(
+                    'invalid opening_hours instance (must be instanceof \Cadulis\Sdk\CustomerAssignmentRestriction'
+                );
+            }
+            $return['assignment_restrictions'] = $this->assignment_restrictions->toString();
         }
 
         return $return;
@@ -106,10 +119,18 @@ class Customer extends AbstractModel
             }
             $this->opening_hours->hydrate($data['opening_hours']);
         }
+        if (isset($data['assignment_restrictions'])) {
+            $this->assignment_restrictions = new CustomerAssignmentRestriction();
+            if (!is_string($data['assignment_restrictions'])) {
+                throw new \Exception('Invalid parameter "assignment_restrictions"');
+            }
+            $this->assignment_restrictions->hydrate($data['assignment_restrictions']);
+        }
         foreach ($data as $k => $v) {
             if (!in_array($k, $this->_properties)
                 && $k !== 'custom_fields'
                 && $k !== 'opening_hours'
+                && $k !== 'assignment_restrictions'
             ) {
                 if ($this->custom_fields === null) {
                     $this->custom_fields = new CustomerCustomFields;

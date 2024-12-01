@@ -11,17 +11,17 @@ class CustomerOpeningHours
         array_map(
             function ($day) {
                 if (!is_int($day) || $day < 0 || $day > 6) {
-                    throw new \Exception('Wrong day format, must be an integer between 0 and 6');
+                    throw new \InvalidArgumentException('Wrong day format, must be an integer between 0 and 6');
                 }
             },
             $days
         );
 
         if (!is_int($startTime) || $startTime < 0 || $startTime > 86400) {
-            throw new \Exception('Wrong start time format, must be an integer between 0 and 86400');
+            throw new \InvalidArgumentException('Wrong start time format, must be an integer between 0 and 86400');
         }
         if (!is_int($endTime) || $endTime < 0 || $endTime > 86400) {
-            throw new \Exception('Wrong start time format, must be an integer between 0 and 86400');
+            throw new \InvalidArgumentException('Wrong start time format, must be an integer between 0 and 86400');
         }
 
         $this->openingHours[] = [
@@ -29,6 +29,32 @@ class CustomerOpeningHours
             'start' => $startTime,
             'end'   => $endTime,
         ];
+    }
+
+    public function addOpeningHourByTimeString(array $days, string $startTime, string $endTime)
+    {
+        $start = explode(':', $startTime);
+        if (count($start) !== 3) {
+            throw new \InvalidArgumentException(
+                'Invalid opening hour start format, expecting 3 parts separated by :'
+            );
+        }
+        $end = explode(':', $endTime);
+        if (count($end) !== 3) {
+            throw new \InvalidArgumentException(
+                'Invalid opening hour end format, expecting 3 parts separated by :'
+            );
+        }
+        $this->addOpeningHour(
+            array_map('intval', $days),
+            (int)$start[0] * 3600 + (int)$start[1] * 60 + (int)$start[2],
+            (int)$end[0] * 3600 + (int)$end[1] * 60 + (int)$end[2]
+        );
+    }
+
+    public function getOpeningHours() : array
+    {
+        return $this->openingHours;
     }
 
     //#####          #####//
@@ -44,21 +70,9 @@ class CustomerOpeningHours
         foreach ($data as $openingHour) {
             $data1 = explode('|', $openingHour);
             if (count($data1) !== 3) {
-                throw new \Exception('Invalid opening hour format, expecting 3 parts separated by |');
+                throw new \InvalidArgumentException('Invalid opening hour format, expecting 3 parts separated by |');
             }
-            $start = explode(':', $data1[1]);
-            if (count($start) !== 3) {
-                throw new \Exception('Invalid opening hour start format, expecting 3 parts separated by :');
-            }
-            $end = explode(':', $data1[2]);
-            if (count($end) !== 3) {
-                throw new \Exception('Invalid opening hour end format, expecting 3 parts separated by :');
-            }
-            $this->addOpeningHour(
-                array_map('intval', explode(',', $data1[0])),
-                (int)$start[0] * 3600 + (int)$start[1] * 60 + (int)$start[2],
-                (int)$end[0] * 3600 + (int)$end[1] * 60 + (int)$end[2]
-            );
+            $this->addOpeningHourByTimeString(explode(',', $data1[0]), $data1[1], $data1[2]);
         }
     }
 
