@@ -112,14 +112,14 @@ class Customer extends AbstractModel
             }
             $this->custom_fields->hydrate($data['custom_fields']);
         }
-        if (isset($data['opening_hours'])) {
+        if (!empty($data['opening_hours'])) {
             $this->opening_hours = new CustomerOpeningHours();
             if (!is_string($data['opening_hours'])) {
                 throw new \Exception('Invalid parameter "opening_hours"');
             }
             $this->opening_hours->hydrate($data['opening_hours']);
         }
-        if (isset($data['assignment_restrictions'])) {
+        if (!empty($data['assignment_restrictions'])) {
             $this->assignment_restrictions = new CustomerAssignmentRestriction();
             if (!is_string($data['assignment_restrictions'])) {
                 throw new \Exception('Invalid parameter "assignment_restrictions"');
