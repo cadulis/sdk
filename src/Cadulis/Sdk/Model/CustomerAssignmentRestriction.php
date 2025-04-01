@@ -55,7 +55,15 @@ class CustomerAssignmentRestriction
      */
     public function hydrate(string $assignmentRestriction)
     {
+        if (empty(trim($assignmentRestriction))) {
+            return;
+        }
         $data = explode(';', $assignmentRestriction);
+        if (count($data) === 1) {
+            $this->setRestrictionMode(static::USER_RESTRICTION_MODE_RESTRICT);
+            $this->addAssignmentEmail($data[0]);
+            $this->setWithLastAssignedUser(0);
+        }
         if (count($data) !== 3) {
             throw new \InvalidArgumentException('Invalid assignment restriction');
         }
