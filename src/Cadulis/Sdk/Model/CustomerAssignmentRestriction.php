@@ -63,6 +63,7 @@ class CustomerAssignmentRestriction
             $this->setRestrictionMode(static::USER_RESTRICTION_MODE_RESTRICT);
             $this->addAssignmentEmail($data[0]);
             $this->setWithLastAssignedUser(0);
+            return;
         }
         if (count($data) !== 3) {
             throw new \InvalidArgumentException('Invalid assignment restriction');
