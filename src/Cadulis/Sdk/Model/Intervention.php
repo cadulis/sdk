@@ -24,6 +24,7 @@ class Intervention extends AbstractModel
     ];
 
     public $id;
+    public $parent_id;
     public $cref;
     public $is_light_model;
     public $reference;
@@ -131,6 +132,7 @@ class Intervention extends AbstractModel
         'ignore_restriction',
         'assignment_method',
         'color',
+        'parent_id'
     ];
 
     /**

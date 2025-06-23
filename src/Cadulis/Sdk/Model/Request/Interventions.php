@@ -44,6 +44,7 @@ class Interventions extends AbstractRequest
 
     public $without_scheduled_start;
     public $without_appointment;
+    public $parent_id;
 
     /**
      * @var string @see \Cadulis\Sdk\Model\Intervention::STATUS_ ...
@@ -61,6 +62,7 @@ class Interventions extends AbstractRequest
         'intervention_types',
         'without_scheduled_start',
         'without_appointment',
+        'parent_id',
     ];
 
     public function __construct(array $data = null)
