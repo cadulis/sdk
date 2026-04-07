@@ -47,6 +47,16 @@ class Interventions extends AbstractRequest
     public $parent_id;
 
     /**
+     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00 — UTC in database
+     */
+    public $updated_at_min;
+
+    /**
+     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00 — UTC in database
+     */
+    public $updated_at_max;
+
+    /**
      * @var string @see \Cadulis\Sdk\Model\Intervention::STATUS_ ...
      */
     public $status;
@@ -63,6 +73,8 @@ class Interventions extends AbstractRequest
         'without_scheduled_start',
         'without_appointment',
         'parent_id',
+        'updated_at_min',
+        'updated_at_max',
     ];
 
     public function __construct(array $data = null)
@@ -140,7 +152,7 @@ class Interventions extends AbstractRequest
 
     protected function checkContent(array $data = null)
     {
-        $dateFields = ['scheduled_start_at_min', 'scheduled_start_at_max'];
+        $dateFields = ['scheduled_start_at_min', 'scheduled_start_at_max', 'updated_at_min', 'updated_at_max'];
         $this->checkDateFields($dateFields, $data);
 
         $stringOrStringArrays = ['cref', 'reference', 'status'];

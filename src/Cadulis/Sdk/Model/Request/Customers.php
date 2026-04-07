@@ -26,10 +26,22 @@ class Customers extends AbstractRequest
      */
     public $with_inactive = false;
 
+    /**
+     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00 — UTC in database
+     */
+    public $updated_at_min;
+
+    /**
+     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00 — UTC in database
+     */
+    public $updated_at_max;
+
     protected $_properties = [
         'search_query',
         'category',
         'with_inactive',
+        'updated_at_min',
+        'updated_at_max',
     ];
 
     public function __construct(array $data = null)
@@ -75,6 +87,9 @@ class Customers extends AbstractRequest
 
     protected function checkContent(array $data = null)
     {
+        $dateFields = ['updated_at_min', 'updated_at_max'];
+        $this->checkDateFields($dateFields, $data);
+
         $stringOrStringArrays = ['category'];
         foreach ($stringOrStringArrays as $stringOrStringArray) {
             if (isset($data[$stringOrStringArray]) && is_array($data[$stringOrStringArray])) {

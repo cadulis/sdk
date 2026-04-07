@@ -100,6 +100,11 @@ class Intervention extends AbstractModel
      */
     public $self_service_start_at;
 
+    /**
+     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00 — always in UTC
+     */
+    public $updated_at;
+
     protected $_properties = [
         'id',
         'cref',
@@ -132,7 +137,8 @@ class Intervention extends AbstractModel
         'ignore_restriction',
         'assignment_method',
         'color',
-        'parent_id'
+        'parent_id',
+        'updated_at'
     ];
 
     /**
