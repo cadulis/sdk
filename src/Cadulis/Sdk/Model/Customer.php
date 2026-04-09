@@ -31,6 +31,11 @@ class Customer extends AbstractModel
     public $portal_code;
 
     /**
+     * @var int|null Parent customer id, null if none
+     */
+    public $parent_id;
+
+    /**
      * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00 — always in UTC
      */
     public $updated_at;
@@ -51,6 +56,7 @@ class Customer extends AbstractModel
         'active',
         'portal_access',
         'portal_code',
+        'parent_id',
         'updated_at',
     ];
 
@@ -68,6 +74,11 @@ class Customer extends AbstractModel
      * @var CustomerAssignmentRestriction
      */
     public $assignment_restrictions;
+
+    /**
+     * @var Customer|null Parent customer (light), only populated in full model GET responses
+     */
+    public $parent;
 
     /**
      * @return array
@@ -98,6 +109,9 @@ class Customer extends AbstractModel
                 );
             }
             $return['assignment_restrictions'] = $this->assignment_restrictions->toString();
+        }
+        if ($this->parent !== null && $this->parent instanceof Customer) {
+            $return['parent'] = $this->parent->toArray();
         }
 
         return $return;
