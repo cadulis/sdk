@@ -57,6 +57,16 @@ class Interventions extends AbstractRequest
     public $updated_at_max;
 
     /**
+     * @var string Field to sort results by. Allowed: 'id', 'updated_at'
+     */
+    public $sort_by = 'id';
+
+    /**
+     * @var string Sort direction. Allowed: 'asc', 'desc'
+     */
+    public $sort_order = 'asc';
+
+    /**
      * @var string @see \Cadulis\Sdk\Model\Intervention::STATUS_ ...
      */
     public $status;
@@ -75,6 +85,8 @@ class Interventions extends AbstractRequest
         'parent_id',
         'updated_at_min',
         'updated_at_max',
+        'sort_by',
+        'sort_order',
     ];
 
     public function __construct(array $data = null)
@@ -173,6 +185,17 @@ class Interventions extends AbstractRequest
             }
         }
 
+        // sort_by validation
+        $sortBy = $data['sort_by'] ?? $this->sort_by;
+        if ($sortBy !== null && !in_array($sortBy, ['id', 'updated_at'], true)) {
+            throw new \Cadulis\Sdk\Exception('sort_by must be one of: id, updated_at');
+        }
+
+        // sort_order validation
+        $sortOrder = $data['sort_order'] ?? $this->sort_order;
+        if ($sortOrder !== null && !in_array($sortOrder, ['asc', 'desc'], true)) {
+            throw new \Cadulis\Sdk\Exception('sort_order must be one of: asc, desc');
+        }
     }
 
 }
