@@ -12,6 +12,11 @@ class Customers extends AbstractRequest
     public $category = '';
 
     /**
+     * @var string|null Customer type filter. Allowed: 'company', 'individual', 'machine'. Null = all types.
+     */
+    public $type = null;
+
+    /**
      * @var string search query
      */
     public $search_query = '';
@@ -49,6 +54,7 @@ class Customers extends AbstractRequest
     protected $_properties = [
         'search_query',
         'category',
+        'type',
         'with_inactive',
         'updated_at_min',
         'updated_at_max',
@@ -130,6 +136,13 @@ class Customers extends AbstractRequest
         $sortOrder = $data['sort_order'] ?? $this->sort_order;
         if ($sortOrder !== null && !in_array($sortOrder, ['asc', 'desc'], true)) {
             throw new \Cadulis\Sdk\Exception('sort_order must be one of: asc, desc');
+        }
+
+        // type validation — null/empty = all types, otherwise must be one of the allowed values
+        $type = $data['type'] ?? $this->type;
+        $allowedTypes = ['company', 'individual', 'machine'];
+        if ($type !== null && $type !== '' && !in_array($type, $allowedTypes, true)) {
+            throw new \Cadulis\Sdk\Exception('type must be one of: ' . implode(', ', $allowedTypes));
         }
     }
 }
