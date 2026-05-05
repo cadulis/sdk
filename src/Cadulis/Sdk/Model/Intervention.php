@@ -105,6 +105,11 @@ class Intervention extends AbstractModel
      */
     public $updated_at;
 
+    /**
+     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00 — always in UTC
+     */
+    public $created_at;
+
     protected $_properties = [
         'id',
         'cref',
@@ -138,7 +143,8 @@ class Intervention extends AbstractModel
         'assignment_method',
         'color',
         'parent_id',
-        'updated_at'
+        'updated_at',
+        'created_at',
     ];
 
     /**

@@ -18,6 +18,19 @@ class Interventions extends AbstractRequest
     public $light_model = true;
 
     /**
+     * @var bool When true and light_model=false, the linked customer is rendered as a full Customer
+     *           (instead of the default light projection). No effect if light_model=true.
+     */
+    public $with_full_customer = false;
+
+    /**
+     * @var bool When true and with_full_customer=true, the customer's parent is rendered as a full
+     *           Customer (instead of the default CustomerLight). No effect otherwise.
+     *           Named "customer_parent" to disambiguate from the intervention's parent_id field.
+     */
+    public $with_full_customer_parent = false;
+
+    /**
      * @var \Cadulis\Sdk\Model\Request\Pagination
      */
     public $pagination;
@@ -74,6 +87,8 @@ class Interventions extends AbstractRequest
     protected $_properties = [
         'cref',
         'light_model',
+        'with_full_customer',
+        'with_full_customer_parent',
         'reference',
         'scheduled_start_at_min',
         'scheduled_start_at_max',
@@ -159,6 +174,18 @@ class Interventions extends AbstractRequest
         }
         if ($this->light_model === 'false') {
             $this->light_model = 0;
+        }
+        if ($this->with_full_customer === 'true') {
+            $this->with_full_customer = 1;
+        }
+        if ($this->with_full_customer === 'false') {
+            $this->with_full_customer = 0;
+        }
+        if ($this->with_full_customer_parent === 'true') {
+            $this->with_full_customer_parent = 1;
+        }
+        if ($this->with_full_customer_parent === 'false') {
+            $this->with_full_customer_parent = 0;
         }
     }
 

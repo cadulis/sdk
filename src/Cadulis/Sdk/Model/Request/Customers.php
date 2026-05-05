@@ -51,6 +51,18 @@ class Customers extends AbstractRequest
      */
     public $sort_order = 'asc';
 
+    /**
+     * @var bool Only get summary information. Default true. Set to false to get the full customer payload
+     *           (email, phone, mobile, address, custom_fields, etc.)
+     */
+    public $light_model = true;
+
+    /**
+     * @var bool When true and light_model=false, the parent object is rendered as a full Customer
+     *           (instead of the default CustomerLight). No effect if light_model=true.
+     */
+    public $with_full_parent = false;
+
     protected $_properties = [
         'search_query',
         'category',
@@ -60,6 +72,8 @@ class Customers extends AbstractRequest
         'updated_at_max',
         'sort_by',
         'sort_order',
+        'light_model',
+        'with_full_parent',
     ];
 
     public function __construct(array $data = null)
@@ -100,6 +114,18 @@ class Customers extends AbstractRequest
         }
         if ($this->with_inactive === 'false') {
             $this->with_inactive = 0;
+        }
+        if ($this->light_model === 'true') {
+            $this->light_model = 1;
+        }
+        if ($this->light_model === 'false') {
+            $this->light_model = 0;
+        }
+        if ($this->with_full_parent === 'true') {
+            $this->with_full_parent = 1;
+        }
+        if ($this->with_full_parent === 'false') {
+            $this->with_full_parent = 0;
         }
     }
 

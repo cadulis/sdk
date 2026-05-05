@@ -40,6 +40,11 @@ class Customer extends AbstractModel
      */
     public $updated_at;
 
+    /**
+     * @var string date (ISO 8601) eg : 2004-02-12T15:19:21+00:00 — always in UTC
+     */
+    public $created_at;
+
     protected $_properties = [
         'id',
         'reference',
@@ -58,6 +63,7 @@ class Customer extends AbstractModel
         'portal_code',
         'parent_id',
         'updated_at',
+        'created_at',
     ];
 
     /**
