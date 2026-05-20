@@ -19,6 +19,13 @@ class InterventionReport extends AbstractModel
     public $end_at;
 
     /**
+     * Bypass required custom-field validation on close (UI parity).
+     * Input-only flag (null/absent = off); only honored on close paths when the type allows reportForce.
+     * Left null by default so it is omitted from toArray() output and report responses keep their shape.
+     */
+    public $force;
+
+    /**
      * @deprecated
      */
     public $pdf_b64;
@@ -30,7 +37,7 @@ class InterventionReport extends AbstractModel
     public $reports_b64;
     public $withReports;
 
-    protected $_properties = array('comment', 'status', 'reported_at', 'start_at', 'end_at', 'pdf_b64', 'withPdf', 'reports_b64', 'withReports');
+    protected $_properties = array('comment', 'status', 'reported_at', 'start_at', 'end_at', 'force', 'pdf_b64', 'withPdf', 'reports_b64', 'withReports');
 
     /**
      * @var Intervention
