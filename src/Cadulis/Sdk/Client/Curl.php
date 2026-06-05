@@ -45,6 +45,9 @@ class Curl
     protected $_throwExceptionOnError        = true;
     protected $_acceptSelfSignedCertificates = false;
     protected $_timeout                      = 10;
+    protected ?int $_timeoutMs               = null;
+    protected int $_connectTimeout           = 5;
+    protected ?int $_connectTimeoutMs        = null;
     protected $_redirectCount                = 0;
     protected $_host;
     protected $_port;
@@ -178,8 +181,10 @@ class Curl
 
         curl_setopt($this->_curlHandler, CURLOPT_CUSTOMREQUEST, $this->_method);
 
-        curl_setopt($this->_curlHandler, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($this->_curlHandler, CURLOPT_TIMEOUT, $this->_timeout); //timeout in seconds
+        // Timeout: integer-second by default (back-compat), or sub-second via the *Ms setters
+        // (CURLOPT_*_MS + NOSIGNAL — required for libcurl to honour ms granularity). A caller
+        // that must never block (e.g. a best-effort fire-and-forget POST) sets a ms budget.
+        curl_setopt_array($this->_curlHandler, $this->buildTimeoutOptions());
 
         // we need to manually follow redirections to check host each time
         curl_setopt($this->_curlHandler, CURLOPT_FOLLOWLOCATION, false);
@@ -487,6 +492,66 @@ class Curl
     public function setTimeout(int $timeout)
     {
         $this->_timeout = $timeout;
+    }
+
+    public function setConnectTimeout(int $connectTimeout)
+    {
+        $this->_connectTimeout = $connectTimeout;
+    }
+
+    /**
+     * Sub-second total timeout. Honoured via CURLOPT_TIMEOUT_MS + CURLOPT_NOSIGNAL (see
+     * buildTimeoutOptions). Use for fire-and-forget calls that must never freeze the caller.
+     */
+    public function setTimeoutMs(int $timeoutMs)
+    {
+        $this->_timeoutMs = $timeoutMs;
+    }
+
+    public function setConnectTimeoutMs(int $connectTimeoutMs)
+    {
+        $this->_connectTimeoutMs = $connectTimeoutMs;
+    }
+
+    public function getTimeoutMs() : ?int
+    {
+        return $this->_timeoutMs;
+    }
+
+    public function getConnectTimeoutMs() : ?int
+    {
+        return $this->_connectTimeoutMs;
+    }
+
+    /**
+     * Resolve the cURL timeout options. Millisecond budgets take precedence over the
+     * second-granularity defaults and force CURLOPT_NOSIGNAL (libcurl ignores sub-second
+     * timeouts otherwise, and SIGALRM-based timeouts are unsafe off the main thread).
+     * The default ({connect: 5s, total: 10s}) is byte-identical to the previous behaviour.
+     *
+     * @return array<int, int|bool>
+     */
+    protected function buildTimeoutOptions() : array
+    {
+        $options = [];
+
+        if ($this->_connectTimeoutMs !== null) {
+            $options[CURLOPT_CONNECTTIMEOUT_MS] = $this->_connectTimeoutMs;
+        } else {
+            $options[CURLOPT_CONNECTTIMEOUT] = $this->_connectTimeout;
+        }
+
+        if ($this->_timeoutMs !== null) {
+            $options[CURLOPT_TIMEOUT_MS] = $this->_timeoutMs;
+        } else {
+            $options[CURLOPT_TIMEOUT] = $this->_timeout;
+        }
+
+        if ($this->_timeoutMs !== null || $this->_connectTimeoutMs !== null) {
+            $options[CURLOPT_NOSIGNAL] = true;
+        }
+
+        return $options;
     }
 
     public function setAcceptSelfSignedCertificates(bool $acceptSelfSigned)
