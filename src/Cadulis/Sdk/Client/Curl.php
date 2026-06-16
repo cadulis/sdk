@@ -12,6 +12,19 @@ class Curl
 
     const MAX_REDIRECT = 10;
 
+    /**
+     * Connect-phase cURL errnos. For these the TCP connection never established, so zero bytes
+     * reached the server and the request did NOT run server-side. Retrying them therefore
+     * cannot double-apply anything — it is safe even for non-idempotent calls (e.g. a POST that
+     * creates a record). See curlExec().
+     */
+    const RETRYABLE_CONNECT_ERRORS = [
+        CURLE_COULDNT_RESOLVE_HOST, // 6
+        CURLE_COULDNT_CONNECT,      // 7
+    ];
+
+    const MAX_CONNECT_RETRIES = 2;
+
     const METHOD_POST   = 'POST';
     const METHOD_GET    = 'GET';
     const METHOD_PUT    = 'PUT';
@@ -259,20 +272,77 @@ class Curl
 
     protected function curlExec()
     {
-        $response = curl_exec($this->_curlHandler);
-        $this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
+        $attempt = 0;
+        while (true) {
+            $result = $this->doCurlExec();
+            $this->_httpResponseCode = $result['httpCode'];
 
-        if ($response === false) {
-            $error = curl_error($this->_curlHandler);
-            $code = curl_errno($this->_curlHandler);
-            throw new Exception($error, $code);
+            if ($result['response'] !== false) {
+                break;
+            }
+
+            // Retry ONLY on connect-phase failures (errno 6/7): the connection never
+            // established → zero bytes reached the server → the request did not execute, so a
+            // retry cannot double-apply anything (safe even for non-idempotent POSTs). A
+            // mid-stream/read error such as CURLE_OPERATION_TIMEDOUT (28) is deliberately NOT
+            // retried here — once bytes are sent we cannot prove the server didn't process them.
+            if (in_array($result['errno'], self::RETRYABLE_CONNECT_ERRORS, true)
+                && $attempt < self::MAX_CONNECT_RETRIES
+            ) {
+                $this->log(
+                    [
+                        'cURL connect-phase retry' => [
+                            'attempt' => $attempt + 1,
+                            'max'     => self::MAX_CONNECT_RETRIES,
+                            'errno'   => $result['errno'],
+                            'error'   => $result['error'],
+                            'url'     => $this->_url,
+                        ],
+                    ]
+                );
+                $this->connectRetryBackoff($attempt);
+                $attempt++;
+                continue;
+            }
+
+            throw new Exception($result['error'], $result['errno']);
         }
 
         $headerSize = curl_getinfo($this->_curlHandler, CURLINFO_HEADER_SIZE);
-        [$this->_responseHeaders, $this->_responseBody] = $this->parseHttpResponse($response, $headerSize);
+        [$this->_responseHeaders, $this->_responseBody] = $this->parseHttpResponse($result['response'], $headerSize);
         $this->_httpResponseCode = curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE);
 
-        return $response;
+        return $result['response'];
+    }
+
+    /**
+     * One curl_exec attempt, normalised into an array. Isolated as a seam so the connect-phase
+     * retry policy in curlExec() can be unit-tested without a real network round-trip.
+     *
+     * @return array{response: string|false, errno: int, error: string, httpCode: int}
+     */
+    protected function doCurlExec() : array
+    {
+        $response = curl_exec($this->_curlHandler);
+
+        return [
+            'response' => $response,
+            'errno'    => curl_errno($this->_curlHandler),
+            'error'    => curl_error($this->_curlHandler),
+            'httpCode' => curl_getinfo($this->_curlHandler, CURLINFO_HTTP_CODE),
+        ];
+    }
+
+    /**
+     * Backoff before the next connect-phase retry: ~250ms then ~500ms, plus a small random
+     * jitter to avoid a thundering herd of workers all retrying the same just-restarted
+     * endpoint at the same instant. Overridable so unit tests don't actually sleep.
+     */
+    protected function connectRetryBackoff(int $attempt) : void
+    {
+        $baseMs   = 250 * (2 ** $attempt); // 250, 500
+        $jitterMs = random_int(0, 100);
+        usleep(($baseMs + $jitterMs) * 1000);
     }
 
     /**
