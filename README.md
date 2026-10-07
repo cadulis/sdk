@@ -24,7 +24,7 @@ Available services are
 
 * Intervention (search, create, update, read)
 * InterventionType (getAvailable)
-* ScheduleWizard (getSlots)
+* ScheduleWizard (getSlots): deprecated, see below
 
 ## API init
 
@@ -172,42 +172,9 @@ $result = $interventionTypeService->getAvailable();
 
 ## Schedule wizard service
 
-__To get available assignment slots, use `ScheduleWizard` !!!__
+__Deprecated.__ The Cadulis API does not serve slots for an intervention that is not created yet: `getSlots` throws `Forbidden route with identifier "schedule-wizard"`.
 
-Retrieve the `ScheduleWizardInput` object to set all-what-you-need input parameters
-
-```php
-$scheduleWizardService = $cadulisAPI->services->newServiceScheduleWizard();
-$scheduleWizardInput = $scheduleWizardService->newWizardInput();
-$scheduleWizardInput->address = '7 rue de la Dordogne Toulouse';
-```
-
-Use the `getSlots` method on the `scheduleWizardService` to get available slots
-
-```php
-$result = $scheduleWizardService->getSlots($scheduleWizardInput);
-```
-
-Returned result is instance of `\Cadulis\Sdk\Model\Response\ScheduleWizard\ScheduleWizard`
-
-```php
-echo count($result) . ' dates returned' . "\n";
-echo 'best slot : ';
-$bestSlot = $result->getBestSlot();
-if ($bestSlot === null) {
-    echo "No slot available";
-} else {
-    echo "Best slot : " . $bestSlot->date;
-}
-```
-
-Schedule Wizard get options are :
-
-```php
-$scheduleWizardInput->address
-$scheduleWizardInput->date_min // ISO 8601 format, can be set by $intervention->setDateMin($date)
-$scheduleWizardInput->date_max // ISO 8601 format, can be set by $intervention->setDateMax($date)
-```
+To get available assignment slots, create the intervention, then call the API route `interventions/{id}/schedule-wizard` (also `by-cref` and `by-ref`, see the API documentation).
 
 # Log
 

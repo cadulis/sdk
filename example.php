@@ -62,20 +62,3 @@ $result = $interventionService->read($intervention);
 
 $interventionTypeService = $cadulisAPI->services->newServiceInterventionType();
 $result = $interventionTypeService->getAvailable();
-
-
-
-// GET AVAILABLE ASSIGNMENT SLOTS
-
-$scheduleWizardService = $cadulisAPI->services->newServiceScheduleWizard();
-$scheduleWizardInput = $scheduleWizardService->newWizardInput();
-$scheduleWizardInput->address = '7 rue de la Dordogne Toulouse';
-$result = $scheduleWizardService->getSlots($scheduleWizardInput);
-echo count($result) . ' dates returned' . "\n";
-echo 'best slot : ';
-$bestSlot = $result->getBestSlot();
-if ($bestSlot === null) {
-    echo "No slot available";
-} else {
-    echo "Best slot : " . $bestSlot->date;
-}

@@ -4,11 +4,19 @@ namespace Cadulis\Sdk\Service;
 
 class ScheduleWizard extends AbstractService
 {
+    /**
+     * @deprecated only feeds getSlots()
+     */
     public function newWizardInput()
     {
         return new \Cadulis\Sdk\Model\Request\ScheduleWizard();
     }
 
+    /**
+     * @deprecated the Cadulis API does not serve slots for an intervention not created yet:
+     * the call throws "Forbidden route". Create the intervention, then read its slots
+     * through the API route interventions/{id}/schedule-wizard.
+     */
     public function getSlots(\Cadulis\Sdk\Model\Request\ScheduleWizard $scheduleWizardInput)
     {
         if ($scheduleWizardInput->address === null) {
