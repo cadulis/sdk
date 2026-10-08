@@ -432,7 +432,7 @@ class Curl
             }
             $exception = new Exception($errMsg, $this->_httpResponseCode);
             // a string only: this client also calls other APIs, whose `error_code` may be a number or an object
-            if (is_array($responseArray) && is_string($responseArray['error_code'] ?? null)) {
+            if (is_string($responseArray['error_code'] ?? null)) {
                 $exception->setErrorCode($responseArray['error_code']);
             }
             throw $exception;
