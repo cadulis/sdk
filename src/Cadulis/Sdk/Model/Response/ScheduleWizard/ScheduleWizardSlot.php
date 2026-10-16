@@ -28,6 +28,8 @@ class ScheduleWizardSlot extends \Cadulis\Sdk\Model\Response\AbstractResponse
         'time',
         'userId',
         'relevanceClass',
+        'relevance',
+        'available',
     ];
 
     protected function checkContent(array $data = null)
