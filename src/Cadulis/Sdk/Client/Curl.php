@@ -12,6 +12,9 @@ class Curl
 
     const MAX_REDIRECT = 10;
 
+    // a header whose name says it carries a credential: `Authorization`, `Cookie`, `X-API-KEY`, `Api-Token`…
+    const CREDENTIAL_HEADER = '/^[^:]*(auth|cookie|key|token|secret|pass|pwd|session)[^:]*:/i';
+
     /**
      * Connect-phase cURL errnos. For these the TCP connection never established, so zero bytes
      * reached the server and the request did NOT run server-side. Retrying them therefore
@@ -89,6 +92,25 @@ class Curl
         $this->setVars($url, $method, $headers, $postFields);
     }
 
+    /**
+     * A credential belongs to the origin it was given to: same host, scheme and port — or that origin upgraded to
+     * https, where nothing more travels in clear than on the first request. Same grain as curl since CVE-2022-27776.
+     */
+    protected static function credentialsMayFollow(string $fromUrl, string $toUrl) : bool
+    {
+        $from = parse_url($fromUrl);
+        $to = parse_url($toUrl);
+        if (strcasecmp($from['host'] ?? '', $to['host'] ?? '') !== 0) {
+            return false;
+        }
+        if (strcasecmp($from['scheme'] ?? '', $to['scheme'] ?? '') !== 0) {
+            return strcasecmp($to['scheme'] ?? '', 'https') === 0;
+        }
+        $defaultPort = strcasecmp($from['scheme'] ?? '', 'https') === 0 ? 443 : 80;
+
+        return ($from['port'] ?? $defaultPort) === ($to['port'] ?? $defaultPort);
+    }
+
     protected function setVars($url, $method = self::METHOD_GET, array $headers = [], string|array $postFields = [])
     {
 
@@ -108,6 +130,8 @@ class Curl
         if (!in_array($scheme, ['http', 'https'])) {
             throw new Exception('Wrong URL (allowed protocols are : http/https): ' . $url);
         }
+        $this->_ip = null;
+        $this->_port = null;
         // Looks like an ip
         if (
             preg_match('/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/', $this->_host)
@@ -232,6 +256,14 @@ class Curl
             curl_setopt($this->_curlHandler, CURLOPT_POSTFIELDS, $postFields);
         }
         curl_setopt($this->_curlHandler, CURLOPT_URL, $url);
+        // curl would resolve the name again, maybe to another address: it connects to the one setVars() checked
+        if (filter_var($this->_ip, FILTER_VALIDATE_IP) !== false) {
+            curl_setopt(
+                $this->_curlHandler,
+                CURLOPT_RESOLVE,
+                [sprintf('%s:%d:%s', parse_url($this->_url, PHP_URL_HOST), $this->_port, $this->_ip)]
+            );
+        }
         $this->_headers[] = 'app-platform: api-client';
         curl_setopt($this->_curlHandler, CURLOPT_HTTPHEADER, $this->_headers);
 
@@ -364,13 +396,6 @@ class Curl
         ) {
             // This is a redirect, we want to check everything
             $this->_redirectCount++;
-            curl_setopt(
-                $this->_curlHandler,
-                CURLOPT_RESOLVE,
-                [
-                    sprintf('%s:%d:%s', $this->_host, $this->_port, $this->_ip), // HOST : PORT : IP
-                ]
-            );
             $previousUrl = $this->_url;
             $this->setVars(
                 curl_getinfo($this->_curlHandler, CURLINFO_REDIRECT_URL),
@@ -378,6 +403,11 @@ class Curl
                 $this->_headers,
                 $this->_postFields
             );
+            if (!static::credentialsMayFollow($previousUrl, $this->_url)) {
+                $this->_headers = array_values(
+                    array_filter($this->_headers, fn($header) => !preg_match(self::CREDENTIAL_HEADER, (string)$header))
+                );
+            }
             $this->log(
                 [
                     'httpResponseCode' => $this->_httpResponseCode,
