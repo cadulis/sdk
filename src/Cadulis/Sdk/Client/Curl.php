@@ -397,13 +397,11 @@ class Curl
             // This is a redirect, we want to check everything
             $this->_redirectCount++;
             $previousUrl = $this->_url;
-            $this->setVars(
-                curl_getinfo($this->_curlHandler, CURLINFO_REDIRECT_URL),
-                $this->_method,
-                $this->_headers,
-                $this->_postFields
-            );
-            if (!static::credentialsMayFollow($previousUrl, $this->_url)) {
+            $nextUrl = (string)curl_getinfo($this->_curlHandler, CURLINFO_REDIRECT_URL);
+            $sameOrigin = static::credentialsMayFollow($previousUrl, $nextUrl);
+            // the fields may carry a secret (a `client_secret`): like the credential headers, they stay in their origin
+            $this->setVars($nextUrl, $this->_method, $this->_headers, $sameOrigin ? $this->_postFields : []);
+            if (!$sameOrigin) {
                 $this->_headers = array_values(
                     array_filter($this->_headers, fn($header) => !preg_match(self::CREDENTIAL_HEADER, (string)$header))
                 );
