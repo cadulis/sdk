@@ -22,7 +22,7 @@ class Customers extends \Cadulis\Sdk\Model\Response\AbstractResponse
      */
     public $search;
 
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->customers = new \Cadulis\Sdk\Model\Customers();
         $this->pagination = new \Cadulis\Sdk\Model\Response\Pagination();

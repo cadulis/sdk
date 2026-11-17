@@ -36,7 +36,7 @@ class Route extends \Cadulis\Sdk\Model\AbstractModel
 
     protected $_properties = ['identifier', 'method', 'url', 'model', 'send_as'];
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         if ($data !== null && $this->identifier === null && !isset($data['identifier'])) {
             throw new \Cadulis\Sdk\Exception('required route.identifier');

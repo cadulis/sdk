@@ -60,7 +60,7 @@ class ScheduleWizardDate extends \Cadulis\Sdk\Model\AbstractCollection
         return $return;
     }
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         $dateFields = ['date'];
         $this->checkDateFields($dateFields, $data);

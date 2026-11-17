@@ -14,7 +14,7 @@ class Intervention extends AbstractService
      * @return \Cadulis\Sdk\Model\Response\Interventions
      * @throws \Cadulis\Sdk\Exception
      */
-    public function search(\Cadulis\Sdk\Model\Request\Interventions $searchModel = null)
+    public function search(?\Cadulis\Sdk\Model\Request\Interventions $searchModel = null)
     {
         if ($searchModel === null) {
             $searchModel = new \Cadulis\Sdk\Model\Request\Interventions();

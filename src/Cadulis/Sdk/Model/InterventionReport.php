@@ -90,7 +90,7 @@ class InterventionReport extends AbstractModel
         }
     }
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         if (!empty($data['status']) && !in_array($data['status'], static::$STATUS_ALLOWED)) {
             throw new \Exception(

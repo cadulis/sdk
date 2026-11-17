@@ -76,7 +76,7 @@ class Customers extends AbstractRequest
         'with_full_parent',
     ];
 
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->pagination = new Pagination;
         parent::__construct($data);
@@ -129,7 +129,7 @@ class Customers extends AbstractRequest
         }
     }
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         $dateFields = ['updated_at_min', 'updated_at_max'];
         $this->checkDateFields($dateFields, $data);

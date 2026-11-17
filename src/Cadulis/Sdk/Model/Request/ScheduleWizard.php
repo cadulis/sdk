@@ -50,7 +50,7 @@ class ScheduleWizard extends AbstractRequest
     }
 
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         $dateFields = ['date_min', 'date_max'];
         $this->checkDateFields($dateFields, $data);

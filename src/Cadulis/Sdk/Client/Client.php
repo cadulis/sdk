@@ -17,7 +17,7 @@ class Client
      */
     protected $_routes;
 
-    public function __construct($autoconfigUrl = null, \Bixev\LightLogger\LoggerInterface $logger = null)
+    public function __construct($autoconfigUrl = null, ?\Bixev\LightLogger\LoggerInterface $logger = null)
     {
         $this->_autoconfigUrl = $autoconfigUrl;
         $this->_routes = new \Cadulis\Sdk\Model\Routes\Routes();
@@ -80,7 +80,7 @@ class Client
      * @return mixed
      * @throws \Cadulis\Sdk\Exception
      */
-    public function call($routeIdentifier, \Cadulis\Sdk\Model\AbstractModel $model = null)
+    public function call($routeIdentifier, ?\Cadulis\Sdk\Model\AbstractModel $model = null)
     {
         $this->log('*** Client call ***');
         $this->log('Route identifier : ' . $routeIdentifier);

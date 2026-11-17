@@ -32,7 +32,7 @@ class ScheduleWizardSlot extends \Cadulis\Sdk\Model\Response\AbstractResponse
         'available',
     ];
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         $dateFields = ['date'];
         $this->checkDateFields($dateFields, $data);

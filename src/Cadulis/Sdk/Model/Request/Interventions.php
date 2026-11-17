@@ -104,7 +104,7 @@ class Interventions extends AbstractRequest
         'sort_order',
     ];
 
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->pagination = new Pagination;
         parent::__construct($data);
@@ -189,7 +189,7 @@ class Interventions extends AbstractRequest
         }
     }
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         $dateFields = ['scheduled_start_at_min', 'scheduled_start_at_max', 'updated_at_min', 'updated_at_max'];
         $this->checkDateFields($dateFields, $data);

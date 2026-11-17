@@ -15,7 +15,7 @@ class ScheduleWizardIntervention extends AbstractRequest
 
     protected $_properties = ['date_min', 'users_count', 'weeks', 'start_at_first_slot'];
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         $dateFields = ['date_min'];
         $this->checkDateFields($dateFields, $data);

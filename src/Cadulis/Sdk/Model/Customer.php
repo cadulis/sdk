@@ -166,7 +166,7 @@ class Customer extends AbstractModel
         }
     }
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         if (isset($data['type']) && !in_array($data['type'], static::CUSTOMER_TYPES_ALLOWED)) {
             throw new \Exception(

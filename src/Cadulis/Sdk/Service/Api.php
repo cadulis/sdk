@@ -7,7 +7,7 @@ class Api
     use \Bixev\LightLogger\LoggerTrait;
     use \Cadulis\Sdk\Traits\ClientTrait;
 
-    public function __construct($client = null, \Bixev\LightLogger\LoggerInterface $logger = null)
+    public function __construct($client = null, ?\Bixev\LightLogger\LoggerInterface $logger = null)
     {
         $this->setClient($client);
         $this->setLogger($logger);

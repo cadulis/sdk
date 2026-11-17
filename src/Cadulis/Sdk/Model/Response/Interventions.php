@@ -22,7 +22,7 @@ class Interventions extends \Cadulis\Sdk\Model\Response\AbstractResponse
      */
     public $search;
 
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         $this->interventions = new \Cadulis\Sdk\Model\Interventions();
         $this->pagination = new \Cadulis\Sdk\Model\Response\Pagination();

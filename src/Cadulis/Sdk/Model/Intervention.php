@@ -326,7 +326,7 @@ class Intervention extends AbstractModel
         }
     }
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         $dateFields = ['scheduled_start_at', 'scheduled_end_at'];
         $this->checkDateFields($dateFields, $data);

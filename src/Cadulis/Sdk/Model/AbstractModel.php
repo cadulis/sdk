@@ -19,7 +19,7 @@ abstract class AbstractModel
 
     protected $_properties = [];
 
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         if ($data !== null) {
             $this->hydrate($data);
@@ -65,7 +65,7 @@ abstract class AbstractModel
             || preg_match(static::ISO_8601_DATE_PATTERN_JAVASCRIPT, $date);
     }
 
-    protected function checkContent(array $data = null)
+    protected function checkContent(?array $data = null)
     {
         return true;
     }
@@ -96,7 +96,7 @@ abstract class AbstractModel
 
     }
 
-    protected function checkDateFields(array $fieldNames = [], array $data = null)
+    protected function checkDateFields(array $fieldNames = [], ?array $data = null)
     {
         foreach ($fieldNames as $dateField) {
             if ($data !== null && isset($data[$dateField]) && $data[$dateField] != ''

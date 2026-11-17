@@ -84,7 +84,7 @@ class Curl
         $method = self::METHOD_GET,
         array $headers = [],
         string|array $postFields = [],
-        \Bixev\LightLogger\LoggerInterface $logger = null,
+        ?\Bixev\LightLogger\LoggerInterface $logger = null,
         bool $allowLocalIp = false
     ) {
         $this->_logger = $logger;
@@ -421,7 +421,6 @@ class Curl
         }
         /* end of security part #2 */
 
-        curl_close($this->_curlHandler);
 
         $this->log(
             [
