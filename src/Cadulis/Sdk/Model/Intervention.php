@@ -154,16 +154,19 @@ class Intervention extends AbstractModel
 
     /**
      * @var Customer
+     * @final unset by the API when the connector may not read it: a hook would break that
      */
     public $customer;
 
     /**
      * @var InterventionAssignments
+     * @final unset by the API when the connector may not read it: a hook would break that
      */
     public $assignments;
 
     /**
      * @var InterventionReport
+     * @final unset by the API when the connector may not read it: a hook would break that
      */
     public $report;
 
