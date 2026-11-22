@@ -121,6 +121,10 @@ class Curl
 
         /* security part #1 from https://github.com/xavierleune/demo-forum-php/blob/master/src/Extractor/UrlCrawler6.php*/
         $this->_host = parse_url($url, PHP_URL_HOST);
+        // idn_to_ascii() throws a ValueError on an empty domain, which the callers' catch (\Exception) does not stop
+        if ((string)$this->_host === '') {
+            throw new Exception('Wrong URL (no host): ' . $url);
+        }
         $url = str_replace(
             $this->_host,
             idn_to_ascii($this->_host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46),
